@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function App() {
   return (
     <div className="bg-secondary min-h-[100vh]">
@@ -11,8 +13,12 @@ function App() {
         </div>
         <div id="nav-bar" className="w-[60%]">
           <ul className="flex gap-6 ml-28 text-2xl font-bold">
-            <li className="border-b[primary]">Login</li>
-            <li className="border-b[primary]">About us</li>
+            <li className="border-b[primary]">
+              <Link to="/login">Login</Link>
+            </li>
+            <li className="border-b[primary]">
+              <Link to="/Aboutus">About us</Link>
+            </li>
           </ul>
         </div>
       </div>
