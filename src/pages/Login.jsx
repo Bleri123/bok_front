@@ -53,8 +53,6 @@ export function LoginPage() {
             }}
             validationSchema={SignupSchema}
             onSubmit={async (values) => {
-              // same shape as initial values
-              console.log(values);
               try {
                 const res = await axios.post(
                   'http://localhost:5000/auth/login',
