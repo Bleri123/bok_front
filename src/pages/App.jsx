@@ -1,27 +1,9 @@
-import { Link } from "react-router-dom";
+import { Header } from "../components/Header";
 
 function App() {
   return (
     <div className="bg-secondary min-h-[100vh]">
-      <div id="header" className="bg-primary text-white flex items-center">
-        <div id="logo" className="w-[40%] border-r flex justify-center">
-          <img
-            src="/images/BOK.png"
-            alt="BOK"
-            className="w-[400px] h-[250px] object-cover"
-          />
-        </div>
-        <div id="nav-bar" className="w-[60%]">
-          <ul className="flex gap-6 ml-28 text-2xl font-bold">
-            <li className="border-b[primary]">
-              <Link to="/login">Login</Link>
-            </li>
-            <li className="border-b[primary]">
-              <Link to="/about-us">About us</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <Header />
       <div id="content" className="flex justify-center mt-12  bg-secondary">
         <div id="left" className="w-[60%] ml-8">
           <div id="Welcome">

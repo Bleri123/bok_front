@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .link-style {
+    @apply border-b-4 border-transparent hover:border-secondary duration-700 transition-all;
+  }
+}
