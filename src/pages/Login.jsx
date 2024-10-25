@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types';
-import BOKLogo from '../assets/BOKLOGO.png';
-import { Formik, Form, Field } from 'formik';
-import axios from 'axios';
-import * as Yup from 'yup';
-import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import PropTypes from "prop-types";
+import BOKLogo from "../assets/BOKLOGO.png";
+import { Formik, Form, Field } from "formik";
+import axios from "axios";
+import * as Yup from "yup";
+import { useState } from "react";
+import { Navigate, Link } from "react-router-dom";
 
 const SignupSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Email is required'),
-  pin: Yup.string().max(32).required('Pin is required'),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  pin: Yup.string().max(32).required("Pin is required"),
 });
 
 function CustomField({ name, type, placeholder, isValid }) {
@@ -18,7 +18,7 @@ function CustomField({ name, type, placeholder, isValid }) {
       name={name}
       type={type}
       className={`w-full p-2 border-b-2 border-gray-400 ${
-        isValid ? 'border-gray-400' : 'border-red-400'
+        isValid ? "border-gray-400" : "border-red-400"
       }`}
       placeholder={placeholder}
     />
@@ -30,36 +30,42 @@ function CustomError({ children }) {
 }
 
 export function LoginPage() {
-  const savedToken = localStorage.getItem('token');
+  const savedToken = localStorage.getItem("token");
   const [error, setError] = useState(null);
 
   //If you have saved a token then navigate to dashboard
-  if(savedToken){
-    return <Navigate to='/dashboard' replace/>;
+  if (savedToken) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (
     <div className="bg-slate-800 font-poppins min-h-[100vh] flex flex-col items-center ">
       <div className="flex flex-col items-center max-w-[700px] w-full md:w-[80%]">
-        <img src={BOKLogo} alt="bank of kosovo logo" className="w-56 h-auto" />
+        <Link to="/">
+          <img
+            src={BOKLogo}
+            alt="bank of kosovo logo"
+            className="w-56 h-auto"
+          />
+        </Link>
         <div className="bg-gray-300 sm:w-[60%] w-full rounded-sm">
           <h1 className="text-center p-5 text-5xl text-slate-700 mb-2 border-b-2 border-slate-800">
             Login
           </h1>
           <Formik
             initialValues={{
-              email: '',
-              pin: '',
+              email: "",
+              pin: "",
             }}
             validationSchema={SignupSchema}
             onSubmit={async (values) => {
               try {
                 const res = await axios.post(
-                  'http://localhost:5000/auth/login',
+                  "http://localhost:5000/auth/login",
                   values
                 );
                 setError(null);
-                localStorage.setItem('token', res.data.token);
+                localStorage.setItem("token", res.data.token);
               } catch (e) {
                 setError(e.response.data.error);
               }

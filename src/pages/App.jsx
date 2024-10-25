@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
               <Link to="/login">Login</Link>
             </li>
             <li className="border-b[primary]">
-              <Link to="/Aboutus">About us</Link>
+              <Link to="/about-us">About us</Link>
             </li>
           </ul>
         </div>
