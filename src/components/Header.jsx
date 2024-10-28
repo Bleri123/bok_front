@@ -8,7 +8,7 @@ export const Header = () => {
           <img
             src="/images/BOK.png"
             alt="BOK"
-            className="w-[250px] h-[150px] object-cover"
+            className="w-[125px] h-[85px] object-cover"
           />
         </Link>
       </div>
