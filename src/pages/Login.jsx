@@ -5,6 +5,7 @@ import axios from "axios";
 import * as Yup from "yup";
 import { useState } from "react";
 import { Navigate, Link } from "react-router-dom";
+import storeToken from '../utils/storeToken';
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -12,7 +13,6 @@ const SignupSchema = Yup.object().shape({
 });
 
 function CustomField({ name, type, placeholder, isValid }) {
-  console.log({ isValid });
   return (
     <Field
       name={name}
@@ -65,7 +65,7 @@ export function LoginPage() {
                   values
                 );
                 setError(null);
-                localStorage.setItem("token", res.data.token);
+                storeToken(res.data.token);
               } catch (e) {
                 setError(e.response.data.error);
               }
