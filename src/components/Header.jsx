@@ -8,12 +8,12 @@ export const Header = () => {
           <img
             src="/images/BOK.png"
             alt="BOK"
-            className="w-[400px] h-[250px] object-cover"
+            className="w-[125px] h-[85px] object-cover"
           />
         </Link>
       </div>
       <div id="nav-bar" className="w-[60%]">
-        <ul className="flex gap-6 ml-28 text-2xl font-bold ">
+        <ul className="flex gap-3 justify-center text-sm font-bold">
           <li className="link-style">
             <Link to="/login">Login</Link>
           </li>

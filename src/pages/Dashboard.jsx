@@ -39,7 +39,7 @@ function useAccounts() {
       try {
         const response = await axios.get('http://localhost:5000/api/accounts', {
           headers: { Authorization: `Bearer ${token}` },
-          signal, 
+          signal,
         });
         setAccounts(response.data);
         console.log(response.data);
