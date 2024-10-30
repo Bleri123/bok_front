@@ -5,14 +5,6 @@ import getToken from '../utils/getToken';
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
-function DashboardDesktop() {
-  return (
-    <div>
-      <DashboardHeader />
-    </div>
-  );
-}
-
 const accountsContext = createContext([]);
 
 export default function Dashboard() {
@@ -20,9 +12,9 @@ export default function Dashboard() {
   return (
     <div>
       <accountsContext.Provider value={{ accounts, error }}>
-        <DashboardDesktop />
-        {/*Outlet osht child si balance psh qyty bahet render*/}
-        <Outlet/>
+        <DashboardHeader />
+        {/*QYTY BAHET RENDER CHILD PSH WITHDRAW*/}
+        <Outlet />
       </accountsContext.Provider>
     </div>
   );
