@@ -1,4 +1,4 @@
-import getSelectedAccount from "../utils/getSelectedAccount";
+import getSelectedAccount from '../utils/getSelectedAccount';
 
 export default function Balance() {
   const { error, selectedAccount } = getSelectedAccount();

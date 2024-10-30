@@ -4,6 +4,7 @@ import axios from 'axios';
 import getToken from '../utils/getToken';
 import { useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import DashboardSideBar from '../components/DashboardSideBar';
 
 export const AccountsContext = createContext([]);
 export const SelectedAccountContext = createContext(null);
@@ -23,8 +24,11 @@ export default function Dashboard() {
           value={{ selectedAccountIndex, setSelectedAccountIndex }}
         >
           <DashboardHeader />
-          {/*QYTY BAHET RENDER CHILD PSH WITHDRAW*/}
-          <Outlet />
+          <div className='flex min-h-full bg-green-200'>
+            <DashboardSideBar />
+            {/*QYTY BAHET RENDER CHILD PSH WITHDRAW*/}
+            <Outlet />
+          </div>
         </SelectedAccountContext.Provider>
       </AccountsContext.Provider>
     </div>

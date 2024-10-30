@@ -1,3 +1,5 @@
 export default function DashboardSideBar(){
-    return <h1>This is dashboard sidebar</h1>;
+    return <div className='w-[10%] bg-red-300'>
+
+    </div>;
 }
