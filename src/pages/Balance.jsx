@@ -1,3 +1,11 @@
+import getSelectedAccount from '../utils/getSelectedAccount'
+
 export default function Balance(){
-    return <h1>This is balance</h1>
+    const {error, selectedAccount} = getSelectedAccount();
+
+    if(error){
+        return <h1>{error}</h1>
+    }
+
+    return <h1>This is balance {selectedAccount.balance}</h1>
 }

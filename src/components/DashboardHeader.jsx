@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import BOKLogo from '../assets/BOKLOGO.png';
+import getSelectedAccount from '../utils/getSelectedAccount';
 
-export default function DashboardHeader({
-  accountNumber
-}) {
+export default function DashboardHeader() {
+  const { selectedAccount } = getSelectedAccount();
+  console.log({selectedAccount});
   return (
     <header className="bg-primary h-28 flex">
       <div className="w-[10%] h-full border-r-2 border-b-2 border-stroke">
@@ -16,9 +17,10 @@ export default function DashboardHeader({
       <div className="p-2 text-secondary flex-1">
         <div className="flex h-[50%] items-center pr-20 pl-4 pt-2 pb-4 border-b-2 ">
           <h1 className="mr-[auto] text-4xl font-bold w-min">BOK</h1>
-          {accountNumber && (
+          {selectedAccount &&  (
             <p className="text-xl">
-              <span>Selected account number: </span> {accountNumber}
+              <span>Selected account number: </span>{' '}
+              {selectedAccount.account_number}
             </p>
           )}
         </div>

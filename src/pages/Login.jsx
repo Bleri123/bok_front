@@ -4,7 +4,7 @@ import { Formik, Form, Field } from "formik";
 import axios from "axios";
 import * as Yup from "yup";
 import { useState } from "react";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link, useNavigate } from "react-router-dom";
 import storeToken from '../utils/storeToken';
 
 const SignupSchema = Yup.object().shape({
@@ -32,6 +32,7 @@ function CustomError({ children }) {
 export function LoginPage() {
   const savedToken = localStorage.getItem("token");
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   //If you have saved a token then navigate to dashboard
   if (savedToken) {
@@ -66,6 +67,7 @@ export function LoginPage() {
                 );
                 setError(null);
                 storeToken(res.data.token);
+                navigate('/dashboard', {replace: true})
               } catch (e) {
                 setError(e.response.data.error);
               }
