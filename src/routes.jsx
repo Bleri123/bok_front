@@ -3,7 +3,7 @@ import App from "./pages/App";
 import LoginPage from "./pages/Login";
 import AboutUs from "./pages/AboutUsPage";
 import Error from "./pages/Error";
-import Dashboard from './pages/Dashboard';
+import Dashboard from "./pages/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -20,10 +20,9 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    path: '/dashboard',
-    element: <Dashboard/>
-
-  }
+    path: "/dashboard",
+    element: <Dashboard />,
+  },
 ]);
 
 export default router;
