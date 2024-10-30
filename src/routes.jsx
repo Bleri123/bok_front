@@ -4,6 +4,8 @@ import LoginPage from "./pages/Login";
 import AboutUs from "./pages/AboutUsPage";
 import Error from "./pages/Error";
 import Dashboard from './pages/Dashboard';
+import Withdraw from './pages/Withdraw';
+import Balance from './pages/Balance';
 
 const router = createBrowserRouter([
   {
@@ -21,8 +23,17 @@ const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    element: <Dashboard/>
-
+    element: <Dashboard/>,
+    children: [
+      {
+        path: 'withdraw',
+        element: <Withdraw/>
+      },
+      {
+        index: true,
+        element: <Balance/>
+      }
+    ]
   }
 ]);
 
