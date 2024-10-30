@@ -4,7 +4,6 @@ import getSelectedAccount from '../utils/getSelectedAccount';
 
 export default function DashboardHeader() {
   const { selectedAccount } = getSelectedAccount();
-  console.log({selectedAccount});
   return (
     <header className="bg-primary h-28 flex">
       <div className="w-[10%] h-full border-r-2 border-b-2 border-stroke">
