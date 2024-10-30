@@ -1,29 +1,36 @@
-import { createContext, useEffect } from 'react';
-import DashboardHeader from '../components/DashboardHeader';
-import axios from 'axios';
-import getToken from '../utils/getToken';
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { createContext, useEffect } from "react";
+import DashboardHeader from "../components/DashboardHeader";
+import axios from "axios";
+import getToken from "../utils/getToken";
+import { useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import DashboardSideBar from "../components/DashboardSideBar";
 
-function DashboardDesktop() {
-  return (
-    <div>
-      <DashboardHeader />
-    </div>
-  );
-}
-
-const accountsContext = createContext([]);
+export const AccountsContext = createContext([]);
+export const SelectedAccountContext = createContext(null);
 
 export default function Dashboard() {
   const { accounts, error } = useAccounts();
+  const [selectedAccountIndex, setSelectedAccountIndex] = useState(0);
+
+  if (!getToken()) {
+    return <Navigate to="/" replace></Navigate>;
+  }
+
   return (
     <div>
-      <accountsContext.Provider value={{ accounts, error }}>
-        <DashboardDesktop />
-        {/*Outlet osht child si balance psh qyty bahet render*/}
-        <Outlet/>
-      </accountsContext.Provider>
+      <AccountsContext.Provider value={{ accounts, error }}>
+        <SelectedAccountContext.Provider
+          value={{ selectedAccountIndex, setSelectedAccountIndex }}
+        >
+          <DashboardHeader />
+          <div className="flex min-h-full align-baseline">
+            <DashboardSideBar />
+            {/*QYTY BAHET RENDER CHILD PSH WITHDRAW*/}
+            <Outlet />
+          </div>
+        </SelectedAccountContext.Provider>
+      </AccountsContext.Provider>
     </div>
   );
 }
@@ -40,15 +47,14 @@ function useAccounts() {
 
     async function getAccounts() {
       try {
-        const response = await axios.get('http://localhost:5000/api/accounts', {
+        const response = await axios.get("http://localhost:5000/api/accounts", {
           headers: { Authorization: `Bearer ${token}` },
           signal,
         });
         setAccounts(response.data);
-        console.log(response.data);
       } catch (e) {
-        if (e.name === 'CanceledError') {
-          console.log('Fetch canceled');
+        if (e.name === "CanceledError") {
+          console.log("Fetch canceled");
         } else {
           setError(e);
         }
