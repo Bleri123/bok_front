@@ -23,7 +23,7 @@ export default function DashboardHeader() {
     >
       <div style={{ transform: isActive ? "rotate(45deg)" : "none" }}>
         <svg
-          className={`ham hamRotate w-[40px] sm:w-[80px] lg:hidden ham8 ${
+          className={`ham hamRotate ml-7 w-[40px] sm:w-[80px] lg:hidden ham8 ${
             isActive ? "active" : ""
           }`}
           viewBox="0 0 100 100"
@@ -80,7 +80,7 @@ export default function DashboardHeader() {
       </div>
       <div>
         <img
-          className="w-[140px] h-[110px] md:w-[200px] md:h-[150px] lg:border-b-2 lg:border-r-2 xl:h-[190px] xl:w-[240px]"
+          className="hidden md:block w-[140px] h-[110px] md:w-[200px] md:h-[150px] lg:border-b-2 lg:border-r-2 xl:h-[190px] xl:w-[240px]"
           src={BOKLogo}
           alt="bank of kosovo logo"
         />
@@ -89,7 +89,7 @@ export default function DashboardHeader() {
         <div className="flex h-[50%] items-center pr-20 pl-4 pt-2 pb-4 border-b-2 ">
           <h1 className="mr-[auto] text-4xl font-bold w-min">BOK</h1>
           {selectedAccount && (
-            <p className="text-xl">
+            <p className="ml-7 text-[12px]">
               <span>Selected account number: </span>{" "}
               {selectedAccount.account_number}
             </p>
