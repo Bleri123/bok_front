@@ -3,6 +3,7 @@ import DashboardHeader from '../components/DashboardHeader';
 import axios from 'axios';
 import getToken from '../utils/getToken';
 import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 
 function DashboardDesktop() {
   return (
@@ -20,6 +21,8 @@ export default function Dashboard() {
     <div>
       <accountsContext.Provider value={{ accounts, error }}>
         <DashboardDesktop />
+        {/*Outlet osht child si balance psh qyty bahet render*/}
+        <Outlet/>
       </accountsContext.Provider>
     </div>
   );
