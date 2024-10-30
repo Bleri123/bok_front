@@ -1,8 +1,10 @@
 import PropTypes from "prop-types";
 import BOKLogo from "../assets/BOKLOGO.png";
+import getSelectedAccount from "../utils/getSelectedAccount";
 import { useState } from "react";
 
-export default function DashboardHeader({ accountNumber }) {
+export default function DashboardHeader() {
+  const { selectedAccount } = getSelectedAccount();
   const [isActive, setIsActive] = useState(false);
 
   const toggleMenu = () => {
@@ -83,25 +85,18 @@ export default function DashboardHeader({ accountNumber }) {
           alt="bank of kosovo logo"
         />
       </div>
-      <div>
-        <div className="p-2 text-secondary flex-1 ml-5">
-          <div className="flex h-[50%] items-center pr-20 pl-4 pt-2 pb-4">
-            <h1 className="mr-[auto] text-xl font-bold w-min md:text-3xl lg:text-7xl xl:text-8xl">
-              BOK
-            </h1>
-
-            {accountNumber && (
-              <p className="text-xl">
-                <span>Selected account number: </span> {accountNumber}
-              </p>
-            )}
-          </div>
-          <div className="border-b-2 border-secondary w-[150px] md:w-[320px] lg:w-[700px] xl:w-[1024px] mx-auto"></div>
-          <div className="h-[50%] flex justify-end">
-            <h1 className="text-xl font-medium md:text-3xl lg:text-3xl xl:text-4xl">
-              Bank Of Kosovo
-            </h1>
-          </div>
+      <div className="p-2 text-secondary flex-1">
+        <div className="flex h-[50%] items-center pr-20 pl-4 pt-2 pb-4 border-b-2 ">
+          <h1 className="mr-[auto] text-4xl font-bold w-min">BOK</h1>
+          {selectedAccount && (
+            <p className="text-xl">
+              <span>Selected account number: </span>{" "}
+              {selectedAccount.account_number}
+            </p>
+          )}
+        </div>
+        <div className="h-[50%] flex items-center justify-center">
+          <h1 className="text-2xl font-medium">Bank Of Kosovo</h1>
         </div>
       </div>
     </header>

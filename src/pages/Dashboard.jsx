@@ -3,19 +3,30 @@ import DashboardHeader from '../components/DashboardHeader';
 import axios from 'axios';
 import getToken from '../utils/getToken';
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 
-const accountsContext = createContext([]);
+export const AccountsContext = createContext([]);
+export const SelectedAccountContext = createContext(null);
 
 export default function Dashboard() {
   const { accounts, error } = useAccounts();
+  const [selectedAccountIndex, setSelectedAccountIndex] = useState(0);
+
+  if (!getToken()) {
+    return <Navigate to="/" replace></Navigate>;
+  }
+
   return (
     <div>
-      <accountsContext.Provider value={{ accounts, error }}>
-        <DashboardHeader />
-        {/*QYTY BAHET RENDER CHILD PSH WITHDRAW*/}
-        <Outlet />
-      </accountsContext.Provider>
+      <AccountsContext.Provider value={{ accounts, error }}>
+        <SelectedAccountContext.Provider
+          value={{ selectedAccountIndex, setSelectedAccountIndex }}
+        >
+          <DashboardHeader />
+          {/*QYTY BAHET RENDER CHILD PSH WITHDRAW*/}
+          <Outlet />
+        </SelectedAccountContext.Provider>
+      </AccountsContext.Provider>
     </div>
   );
 }
@@ -37,7 +48,6 @@ function useAccounts() {
           signal,
         });
         setAccounts(response.data);
-        console.log(response.data);
       } catch (e) {
         if (e.name === 'CanceledError') {
           console.log('Fetch canceled');
