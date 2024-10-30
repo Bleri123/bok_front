@@ -1,5 +1,5 @@
 import { Header } from "../components/Header";
-
+import { Footer } from "../components/Footer";
 function App() {
   return (
     <div className="bg-secondary min-h-screen flex flex-col">
@@ -47,12 +47,7 @@ function App() {
           </div>
         </div>
       </div>
-      <div
-        id="footer"
-        className="flex justify-center text[primary] mt-8 align-end"
-      >
-        <p>@COPYRIGHT 2024 BOK</p>
-      </div>
+      <Footer />
     </div>
   );
 }

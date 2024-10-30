@@ -1,3 +1,4 @@
+import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 
 function AboutUs() {
@@ -80,9 +81,7 @@ function AboutUs() {
           </p>
         </div>
       </div>
-      <div id="footer" className="text-center text[primary] mt-8">
-        <p>@COPYRIGHT 2024 BOK</p>
-      </div>
+      <Footer />
     </div>
   );
 }
