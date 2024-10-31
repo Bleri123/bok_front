@@ -12,6 +12,7 @@ export const SelectedAccountContext = createContext(null);
 export default function Dashboard() {
   const { accounts, error } = useAccounts();
   const [selectedAccountIndex, setSelectedAccountIndex] = useState(0);
+  const [showSideBarMobile, setshowSideBarMobile] = useState(false);
 
   if (!getToken()) {
     return <Navigate to="/" replace></Navigate>;
@@ -23,9 +24,9 @@ export default function Dashboard() {
         <SelectedAccountContext.Provider
           value={{ selectedAccountIndex, setSelectedAccountIndex }}
         >
-          <DashboardHeader />
+          <DashboardHeader showSideBar={setshowSideBarMobile} sideBarActive={showSideBarMobile} />
           <div className="flex min-h-full align-baseline">
-            <DashboardSideBar />
+            <DashboardSideBar show={showSideBarMobile} />
             {/*QYTY BAHET RENDER CHILD PSH WITHDRAW*/}
             <Outlet />
           </div>
