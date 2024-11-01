@@ -101,7 +101,7 @@ export default function Balance() {
             </p>
             <div className="border-l-2 border-gray-300 h-6 mx-2" />{" "}
             <p className="text-tprimary flex-1 pl-2 text-md lg:text-xl xl:text-3xl">
-              BANK FEE <span className="text-red-500">-5,0$</span>
+              Bank Fee <span className="text-red-500">-5,0$</span>
             </p>
           </div>
           <div className="border-b-2 border-gray-300 w-full my-2" />{" "}
@@ -111,7 +111,7 @@ export default function Balance() {
             </p>
             <div className="border-l-2 border-gray-300 h-6 mx-2" />{" "}
             <p className="text-tprimary flex-1 pl-2 text-md lg:text-xl xl:text-3xl">
-              BANK FEE <span className="text-green-500">0,0$</span>
+              Bank Fee <span className="text-green-500">0,0$</span>
             </p>
           </div>
           <div className="border-b-2 border-gray-300 w-full my-2" />{" "}
@@ -121,7 +121,7 @@ export default function Balance() {
             </p>
             <div className="border-l-2 border-gray-300 h-6 mx-2" />{" "}
             <p className="text-tprimary flex-1 pl-2 text-md lg:text-xl xl:text-3xl">
-              BANK FEE <span className="text-red-500">-5,0$</span>
+              Bank Fee <span className="text-red-500">-5,0$</span>
             </p>
           </div>
         </div>

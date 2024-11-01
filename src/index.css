@@ -9,5 +9,5 @@
 }
 
 body {
-  @apply bg-balancebg2;
+  @apply bg-balancebg2 font-poppins;
 }
