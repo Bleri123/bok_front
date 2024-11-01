@@ -1,37 +1,48 @@
-import { createBrowserRouter } from "react-router-dom";
-import App from "./pages/App";
-import LoginPage from "./pages/Login";
-import AboutUs from "./pages/AboutUsPage";
-import Error from "./pages/Error";
-import Dashboard from "./pages/Dashboard";
-import Withdraw from "./pages/Withdraw";
-import Balance from "./pages/Balance";
+import { createBrowserRouter } from 'react-router-dom';
+import App from './pages/App';
+import LoginPage from './pages/Login';
+import AboutUs from './pages/AboutUsPage';
+import Error from './pages/Error';
+import Dashboard from './pages/Dashboard';
+import Withdraw from './pages/dashboardPages/Withdraw';
+import Balance from './pages/dashboardPages/Balance';
+import Home from './pages/dashboardPages/Home';
+import Users from './pages/dashboardPages/Users';
+
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <App />,
     errorElement: <Error />,
   },
   {
-    path: "/about-us",
+    path: '/about-us',
     element: <AboutUs />,
   },
   {
-    path: "/login",
+    path: '/login',
     element: <LoginPage />,
   },
   {
-    path: "/dashboard",
+    path: '/dashboard',
     element: <Dashboard />,
     children: [
       {
-        path: "withdraw",
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: 'withdraw',
         element: <Withdraw />,
       },
       {
-        index: true,
+        path: 'balance',
         element: <Balance />,
+      },
+      {
+        path: 'users',
+        element: <Users />,
       },
     ],
   },

@@ -3,7 +3,7 @@ import BOKLogo from "../assets/BOKLOGO.png";
 import getSelectedAccount from "../utils/getSelectedAccount";
 import { useState } from "react";
 
-export default function DashboardHeader() {
+export default function DashboardHeader({ showSideBar, sideBarActive }) {
   const { selectedAccount } = getSelectedAccount();
   const [isActive, setIsActive] = useState(false);
 
@@ -21,7 +21,12 @@ export default function DashboardHeader() {
         overflow: "hidden",
       }}
     >
-      <div style={{ transform: isActive ? "rotate(45deg)" : "none" }}>
+      <div
+        style={{ transform: isActive ? "rotate(45deg)" : "none" }}
+        onClick={() => {
+          showSideBar(!sideBarActive);
+        }}
+      >
         <svg
           className={`ham hamRotate ml-7 w-[40px] sm:w-[80px] lg:hidden ham8 ${
             isActive ? "active" : ""
@@ -104,5 +109,6 @@ export default function DashboardHeader() {
 }
 
 DashboardHeader.propTypes = {
-  accountNumber: PropTypes.string,
+  showSideBar: PropTypes.func,
+  sideBarActive: PropTypes.bool,
 };

@@ -12,6 +12,8 @@ export default {
         blue: "#0000EE",
         stroke: "#D1D5DB",
         tprimary: "#E5E7EB",
+        balancebg: "#7D92AD",
+        balancebg2: "#344966",
       },
     },
   },
