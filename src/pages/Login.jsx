@@ -67,7 +67,6 @@ export function LoginPage() {
                 );
                 setError(null);
                 storeToken(res.data.token);
-                localStorage.setItem('isAdmin', res.data.isAdmin);
                 navigate('/dashboard', {
                   replace: true,
                 });

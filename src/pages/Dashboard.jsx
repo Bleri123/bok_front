@@ -14,7 +14,20 @@ export default function Dashboard() {
   const { accounts, error } = useAccounts();
   const [selectedAccountIndex, setSelectedAccountIndex] = useState(0);
   const [showSideBarMobile, setshowSideBarMobile] = useState(false);
-  const isAdmin = JSON.parse(localStorage.getItem('isAdmin'));
+  const [isAdmin, setIsAdmin] = useState(null);
+
+    useEffect(() => {
+      if(isAdmin === null){
+        async function fetch(){
+          const token = getToken();
+          const res = await axios.get('http://localhost:5000/auth/isAdmin', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setIsAdmin(res.data.isAdmin);
+        }
+        fetch();
+      }
+    }, [isAdmin]);
 
   if (!getToken()) {
     return <Navigate to="/" replace></Navigate>;
@@ -32,7 +45,7 @@ export default function Dashboard() {
           />
           <div className="flex min-h-full align-baseline">
             {isAdmin ? (
-              <DashboardAdminSideBar show={showSideBarMobile}/>
+              <DashboardAdminSideBar show={showSideBarMobile} />
             ) : (
               <DashboardUserSideBar show={showSideBarMobile} />
             )}
