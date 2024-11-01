@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 export default function DashboardSideBar({ show, links }) {
   return (
     <div
-      className={`w-[200px] h-[100vh] bg-primary lg:w-[200px] xl:w-[240px] ${
-        show ? 'block' : 'hidden'
+      className={`w-[200px] bg-primary lg:w-[200px] xl:w-[240px] flex flex-col h-[400px] md:h-[400px] lg:h-[400px] xl:h-[500px] ${
+        show ? "block" : "hidden"
       } lg:block`}
     >
-      <ul className="text-tprimary flex items-center flex-col text-[25px] gap-4 lg:text-[35px]">
-        {links.map(({link, text}) => (
+      <ul className="text-tprimary flex items-center flex-col text-[25px] gap-4 md:w-[200px] lg:w-[200px] lg:text-[35px] xl:w-[240px]">
+        {links.map(({ link, text }) => (
           <li key={text}>
             <Link to={link}>{text}</Link>
           </li>
@@ -21,9 +21,11 @@ export default function DashboardSideBar({ show, links }) {
 
 DashboardSideBar.propTypes = {
   show: PropTypes.bool,
+
   links: PropTypes.arrayOf(
     PropTypes.shape({
       link: PropTypes.string,
+
       text: PropTypes.string,
     })
   ),
