@@ -16,18 +16,23 @@ export default function Dashboard() {
   const [showSideBarMobile, setshowSideBarMobile] = useState(false);
   const [isAdmin, setIsAdmin] = useState(null);
 
-    useEffect(() => {
-      if(isAdmin === null){
-        async function fetch(){
-          const token = getToken();
+  useEffect(() => {
+    if (isAdmin === null) {
+      async function fetch() {
+        const token = getToken();
+        try {
           const res = await axios.get('http://localhost:5000/auth/isAdmin', {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
           setIsAdmin(res.data.isAdmin);
+          // eslint-disable-next-line no-unused-vars
+        } catch (e) {
+          setIsAdmin(false);
         }
-        fetch();
       }
-    }, [isAdmin]);
+      fetch();
+    }
+  }, [isAdmin]);
 
   if (!getToken()) {
     return <Navigate to="/" replace></Navigate>;
