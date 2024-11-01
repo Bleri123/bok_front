@@ -28,11 +28,10 @@ export default function DashboardHeader({ showSideBar, sideBarActive }) {
         }}
       >
         <svg
-          className={`ham hamRotate ml-7 w-[40px] sm:w-[80px] lg:hidden ham8 ${
+          className={`ham hamRotate ml-[53px] w-[40px] sm:w-[80px] lg:hidden ham8 ${
             isActive ? "active" : ""
           }`}
           viewBox="0 0 100 100"
-          // width="80"
           onClick={toggleMenu}
           style={{
             cursor: "pointer",

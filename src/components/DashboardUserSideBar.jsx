@@ -1,22 +1,26 @@
-import PropTypes from 'prop-types';
-import DashboardSideBar from './DashboardSideBar';
+import PropTypes from "prop-types";
+import DashboardSideBar from "./DashboardSideBar";
 
 const links = [
   {
-    link: '/withdraw',
-    text: 'Withdraw',
+    link: "Balance",
+    text: "Balance",
   },
   {
-    link: '/deposit',
-    text: 'Deposit',
+    link: "withdraw",
+    text: "Withdraw",
   },
   {
-    link: '/reports',
-    text: 'Reports',
+    link: "deposit",
+    text: "Deposit",
   },
   {
-    link: '/accounts',
-    text: 'Accounts',
+    link: "reports",
+    text: "Reports",
+  },
+  {
+    link: "accounts",
+    text: "Accounts",
   },
 ];
 
