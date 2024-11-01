@@ -1,6 +1,6 @@
 BOK: A Century of Financial Excellence
 
-Introduction BOK, short for Bank of Knowledge, was established in 1924. Rooted in a tradition of trust, innovation, and customer service, BOK has become a premier institution in the banking sector, catering to millions of customers across 50 countries. With its headquarters in New York City, BOK offers a full range of financial services including personal banking, corporate banking, investment services, and more.
+Introduction BOK, short for Bank of Kosovo, was established in 2024. Rooted in a tradition of trust, innovation, and customer service, BOK has become a premier institution in the banking sector, catering to millions of customers across 50 countries. With its headquarters in Kosovo, BOK offers a full range of financial services including personal banking, corporate banking, investment services, and more.
 
 Mission and Vision BOK's mission is to empower individuals, families, and businesses to achieve their financial goals by providing innovative, reliable, and accessible banking solutions. The vision of BOK is to lead the global market in customer satisfaction and technological advancement, setting the standard for excellence in the financial industry.
 
