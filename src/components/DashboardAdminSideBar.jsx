@@ -13,7 +13,6 @@ const links = [
 ];
 
 export default function DashboardAdminSideBar({ show }) {
-    console.log('Admin sidebar rendered');
   return <DashboardSideBar show={show} links={links} />;
 }
 
