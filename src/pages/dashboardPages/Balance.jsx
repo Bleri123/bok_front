@@ -1,17 +1,28 @@
-import { Navigate, useOutletContext } from "react-router-dom";
-import getSelectedAccount from "../../utils/getSelectedAccount";
-import { Footer } from "../../components/Footer";
+import { Navigate, useOutletContext } from 'react-router-dom';
+import getSelectedAccount from '../../utils/getSelectedAccount';
+import { Footer } from '../../components/Footer';
+import { Fragment, useEffect, useState } from 'react';
+import axios from 'axios';
+import PropTypes from 'prop-types';
+
+import getToken from '../../utils/getToken';
+
 
 export default function Balance() {
   const { error, selectedAccount } = getSelectedAccount();
   const { isAdmin } = useOutletContext();
+  const {
+    transactionHistory,
+    loading,
+    error: transactionHistoryError,
+  } = useTransactionHistory();
 
   if (isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  if (error) {
-    return <h1 className="text-red-500">{error}</h1>;
+  if (error || transactionHistoryError) {
+    return <h1 className="text-red-500">{error || transactionHistoryError}</h1>;
   }
 
   return (
@@ -27,39 +38,85 @@ export default function Balance() {
             </h2>
           </div>
         </div>
-        <div className="mt-4 px-4 flex flex-col justify-center items-center">
-          <div className="flex flex-row justify-between w-full pb-2">
-            <p className="text-tprimary flex-1 pr-2 text-md lg:text-xl xl:text-3xl">
-              Withdraw <span className="text-red-500">-150,0€</span>
-            </p>
-            <div className="border-l-2 border-gray-300 h-6 mx-2" />
-            <p className="text-tprimary flex-1 pl-2 text-md lg:text-xl xl:text-3xl">
-              Bank Fee <span className="text-red-500">-5,0€</span>
-            </p>
+        {loading ? (
+          <p>loading...</p>
+        ) : (
+          <div className="mt-4 px-4 flex flex-col justify-center items-center w-full">
+            {transactionHistory.map(({amount, name, fixed_fee, id}) => {
+              return (
+                <Fragment key={id}>
+                  <div className="border-b-2 border-gray-300 w-full my-2" />
+                  <div className="flex flex-row justify-between w-full pb-2">
+                    <p className="text-tprimary flex-1 pr-2 text-md lg:text-xl xl:text-3xl">
+                      {name.split('_').join(' ').toLowerCase()}{' '}
+                      <Amount name={name} amount={Number(amount)} />
+                    </p>
+                    <div className="border-l-2 border-gray-300 h-6 mx-2" />
+                    <p className="text-tprimary flex-1 pl-2 text-md lg:text-xl xl:text-3xl">
+                      Bank Fee{' '}
+                      <span className={`${fixed_fee !== 0 && 'text-red-500'}`}>
+                        {fixed_fee === 0 ? fixed_fee : -fixed_fee}€
+                      </span>
+                    </p>
+                  </div>
+                </Fragment>
+              );
+            })}
           </div>
-          <div className="border-b-2 border-gray-300 w-full my-2" />
-          <div className="flex flex-row justify-between w-full pb-2">
-            <p className="text-tprimary flex-1 pr-2 text-md lg:text-xl xl:text-3xl">
-              Deposited <span className="text-green-500">+33,0€</span>
-            </p>
-            <div className="border-l-2 border-gray-300 h-6 mx-2" />
-            <p className="text-tprimary flex-1 pl-2 text-md lg:text-xl xl:text-3xl">
-              Bank Fee <span className="text-green-500">0,0€</span>
-            </p>
-          </div>
-          <div className="border-b-2 border-gray-300 w-full my-2" />
-          <div className="flex flex-row justify-between w-full pb-2">
-            <p className="text-tprimary flex-1 pr-2 text-sm md:text-lg lg:text-xl xl:text-3xl">
-              Transaction <span className="text-red-500">-50,0€</span>
-            </p>
-            <div className="border-l-2 border-gray-300 h-6 mx-2" />
-            <p className="text-tprimary flex-1 pl-2 text-md lg:text-xl xl:text-3xl">
-              Bank Fee <span className="text-red-500">-5,0€</span>
-            </p>
-          </div>
-        </div>
+        )}
       </div>
       <Footer />
     </div>
   );
 }
+
+function Amount({name, amount}){
+  switch (name.toLowerCase()) {
+    case 'external_transfer':
+      return <span>{amount}€</span>;
+    case 'internal_transfare':
+      return <span className="text-green-500">+{amount}€</span>;
+    case 'withdraw':
+      return <span className="text-red-500">-{amount}€</span>;
+    case 'deposit':
+      return <span className="text-green-500">+{amount}€</span>;
+    default:
+      return <span className="text-green-500">+{amount}€</span>;
+  }
+}
+
+
+function useTransactionHistory() {
+  const token = getToken();
+  const [transactionHistory, setTransactionHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    async function getTransactionHistory() {
+      try {
+        const transactions = await axios.get(
+          'http://localhost:5000/api/transactions',
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        setLoading(false);
+        setTransactionHistory(transactions.data);
+      } catch (e) {
+        setError(e.message);
+      }
+    }
+
+    getTransactionHistory();
+  }, [token]);
+
+  return { transactionHistory, loading, error };
+}
+
+
+Amount.propTypes = {
+  name: PropTypes.string,
+  amount: PropTypes.number
+};
