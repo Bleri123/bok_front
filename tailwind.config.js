@@ -14,6 +14,7 @@ export default {
         tprimary: "#E5E7EB",
         balancebg: "#7D92AD",
         balancebg2: "#344966",
+        green:"#84cc16",
       },
     },
   },
