@@ -14,8 +14,8 @@ export default function Reports() {
   const totalSpent = spendingData.reduce((sum, item) => sum + item.amount, 0);
 
   return (
-    <div className="min-h-screen w-full py-8 sm:py-12">
-      <div className="w-full max-w-md mx-auto px-4">
+    <div className="min-h-screen w-full py-8 sm:py-12 overflow-x-hidden">
+      <div className="w-full max-w-md mx-auto px-4 relative">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
           Reports
         </h1>
@@ -31,6 +31,7 @@ export default function Reports() {
 
         
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm p-6 text-white mb-6">
+          <h2 className="text-2xl font-bold text-center">€{totalSpent.toFixed(2)}</h2>
           <p className="text-blue-100 mt-1 text-center">Last 7 days</p>
         </div>
 
