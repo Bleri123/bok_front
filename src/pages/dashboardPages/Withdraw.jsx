@@ -2,7 +2,7 @@ import { Navigate, useOutletContext } from "react-router-dom";
 import getSelectedAccount from "../../utils/getSelectedAccount";
 import { Footer } from "../../components/Footer";
 import { useState } from "react";
-import { WithdrawModal } from "../../components/Withdrawmodal";
+import { WithdrawModal } from "../../components/WithdrawModal";
 
 export default function Withdraw() {
   const { error } = getSelectedAccount();
@@ -65,7 +65,11 @@ export default function Withdraw() {
           <button
             onClick={() => handleAmountSelect(10)}
             className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
-              selectedButton === 10 ? "bg-bttclick" : "bg-primary"
+              showModal
+                ? "bg-primary"
+                : selectedButton === 10
+                ? "bg-bttclick"
+                : "bg-primary"
             }`}
           >
             10
@@ -73,7 +77,11 @@ export default function Withdraw() {
           <button
             onClick={() => handleAmountSelect(150)}
             className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
-              selectedButton === 150 ? "bg-bttclick" : "bg-primary"
+              showModal
+                ? "bg-primary"
+                : selectedButton === 150
+                ? "bg-bttclick"
+                : "bg-primary"
             }`}
           >
             150
@@ -83,7 +91,11 @@ export default function Withdraw() {
           <button
             onClick={() => handleAmountSelect(50)}
             className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
-              selectedButton === 50 ? "bg-bttclick" : "bg-primary"
+              showModal
+                ? "bg-primary"
+                : selectedButton === 50
+                ? "bg-bttclick"
+                : "bg-primary"
             }`}
           >
             50
@@ -91,7 +103,11 @@ export default function Withdraw() {
           <button
             onClick={() => handleAmountSelect(200)}
             className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
-              selectedButton === 200 ? "bg-bttclick" : "bg-primary"
+              showModal
+                ? "bg-primary"
+                : selectedButton === 200
+                ? "bg-bttclick"
+                : "bg-primary"
             }`}
           >
             200
@@ -101,14 +117,18 @@ export default function Withdraw() {
           <button
             onClick={() => handleAmountSelect(100)}
             className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
-              selectedButton === 100 ? "bg-bttclick" : "bg-primary"
+              showModal
+                ? "bg-primary"
+                : selectedButton === 100
+                ? "bg-bttclick"
+                : "bg-primary"
             }`}
           >
             100
           </button>
           <button
             onClick={toggleModal}
-            className="bg-primary text-white p-3 w-full max-w-[140px] rounded-md text-sm md:max-w-[300px] md:h-[70px] md:text-2xl"
+            className={`bg-primary text-white p-3 w-full max-w-[140px] rounded-md text-sm md:max-w-[300px] md:h-[70px] md:text-2xl`}
           >
             Enter Number
           </button>
