@@ -64,16 +64,16 @@ export default function Withdraw() {
         <div className="flex justify-center mb-4 gap-4 xl:gap-36">
           <button
             onClick={() => handleAmountSelect(10)}
-            className={`bg-primary text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
-              selectedButton === 10 ? "bg-bttclick" : ""
+            className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
+              selectedButton === 10 ? "bg-bttclick" : "bg-primary"
             }`}
           >
             10
           </button>
           <button
             onClick={() => handleAmountSelect(150)}
-            className={`bg-primary text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
-              selectedButton === 150 ? "bg-bttclick" : ""
+            className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
+              selectedButton === 150 ? "bg-bttclick" : "bg-primary"
             }`}
           >
             150
@@ -82,16 +82,16 @@ export default function Withdraw() {
         <div className="flex justify-center mb-4 gap-4 xl:gap-36">
           <button
             onClick={() => handleAmountSelect(50)}
-            className={`bg-primary text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
-              selectedButton === 50 ? "bg-bttclick" : ""
+            className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
+              selectedButton === 50 ? "bg-bttclick" : "bg-primary"
             }`}
           >
             50
           </button>
           <button
             onClick={() => handleAmountSelect(200)}
-            className={`bg-primary text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
-              selectedButton === 200 ? "bg-bttclick" : ""
+            className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
+              selectedButton === 200 ? "bg-bttclick" : "bg-primary"
             }`}
           >
             200
@@ -100,8 +100,8 @@ export default function Withdraw() {
         <div className="flex justify-center mb-4 gap-4 xl:gap-36">
           <button
             onClick={() => handleAmountSelect(100)}
-            className={`bg-primary text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
-              selectedButton === 100 ? "bg-bttclick" : ""
+            className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
+              selectedButton === 100 ? "bg-bttclick" : "bg-primary"
             }`}
           >
             100
