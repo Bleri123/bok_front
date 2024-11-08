@@ -17,6 +17,7 @@ export default {
         green: "#84cc16",
         drawmodal: "#344966",
         bttclick: "#0f766e",
+        depositmdd: "#D9D9D9",
       },
     },
   },
