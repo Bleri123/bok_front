@@ -1,65 +1,98 @@
-import { Navigate, useOutletContext } from 'react-router-dom';
-import { useState } from 'react';
-import UsersModal from '../../components/UsersModal';
+import { Navigate, useOutletContext } from "react-router-dom";
+import { useState, useEffect } from "react";
+import UsersModal from "../../components/UsersModal";
 
 export default function Users() {
   const { isAdmin } = useOutletContext();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [allUsers, setAllUsers] = useState([]); // State to hold all users
 
-  console.log('isAdmin:', isAdmin);
+  console.log("isAdmin:", isAdmin);
+
+  // New useEffect to fetch all users on component mount
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(`http://localhost:5000/api/users`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch users");
+
+        const users = await response.json();
+
+        setAllUsers(users); // Store all users in state
+      } catch (err) {
+        console.error("Error fetching users:", err);
+
+        setError("Error fetching users");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllUsers(); // Call the function to fetch users
+  }, []);
 
   const handleSearch = async () => {
     if (!email.trim()) return;
-    
+
     setLoading(true);
-    setError('');
+    setError("");
     setUserInfo(null);
 
     try {
-      const token = localStorage.getItem('token');
-      console.log('Making API call with email:', email);
+      const token = localStorage.getItem("token");
+      console.log("Making API call with email:", email);
 
       const response = await fetch(`http://localhost:5000/api/users`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       });
-      
-      if (!response.ok) throw new Error('User not found');
-      
+
+      if (!response.ok) throw new Error("User not found");
+
       const allUsers = await response.json();
-      console.log('All users:', allUsers);
+      console.log("All users:", allUsers);
 
       // Find the specific user by email
-      const foundUser = allUsers.find(user => user.email === email);
-      
+      const foundUser = allUsers.find((user) => user.email === email);
+
       if (!foundUser) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
 
-      console.log('Found user object:', foundUser);
+      console.log("Found user object:", foundUser);
       setUserInfo(foundUser);
     } catch (err) {
-      console.error('Error:', err);
-      setError('User not found or error occurred');
+      console.error("Error:", err);
+      setError("User not found or error occurred");
     } finally {
       setLoading(false);
     }
   };
 
-  if(!isAdmin) {
-    return <Navigate to='/dashboard' replace />;
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (
     <div className="w-full">
       <div className="flex justify-center p-4">
-        <button 
+        <button
           onClick={() => setIsModalOpen(true)}
           className="bg-primary text-white p-2 rounded-xl w-fit px-5 hover:bg-primary/80 transition-colors duration-200"
         >
@@ -68,7 +101,7 @@ export default function Users() {
       </div>
 
       {isModalOpen && (
-        <UsersModal 
+        <UsersModal
           onClose={() => setIsModalOpen(false)}
           email={email}
           setEmail={setEmail}
@@ -84,28 +117,38 @@ export default function Users() {
             <tr>
               <th className="px-6 py-3 rounded-tl-lg">Nr</th>
               <th className="px-6 py-3">Name/Surname</th>
+              <th className="px-6 py-3">Email</th>
               <th className="px-6 py-3">Account Type</th>
               <th className="px-6 py-3">Role</th>
               <th className="px-6 py-3">Status</th>
               <th className="px-6 py-3">City</th>
-              <th className="px-6 py-3 rounded-tr-lg">Zip Code</th>
+              <th className="px-6 py-3">Zip Code</th>
+              <th className="px-6 py-3 rounded-tr-lg"></th>
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-[#60a5fa]/10 border-b border-gray-700 ">
-              <td className="px-6 py-4">1</td>
-              <td className="px-6 py-4 font-medium">Labinot Paqarada</td>
-              <td className="px-6 py-4">credit</td>
-              <td className="px-6 py-4">admin</td>
-              <td className="px-6 py-4">active</td>
-              <td className="px-6 py-4">Prishtina</td>
-              <td className="px-6 py-4">5</td>
-            </tr>
+            {allUsers.map((user, index) => (
+              <tr
+                key={user.id}
+                className="bg-[#60a5fa]/10 border-b border-gray-700"
+              >
+                <td className="px-6 py-4">{index + 1}</td>{" "}
+                {/* Display row number */}
+                <td className="px-6 py-4 font-medium">
+                  {user.first_name} {user.last_name}
+                </td>{" "}
+                <td className="px-6 py-4">{user.email}</td>{" "}
+                <td className="px-6 py-4">accounts</td>{" "}
+                <td className="px-6 py-4">{user.role_name}</td>{" "}
+                <td className="px-6 py-4">{user.account_status}</td>{" "}
+                <td className="px-6 py-4">{user.city}</td>{" "}
+                <td className="px-6 py-4">{user.zip_code}</td>{" "}
+                <td className="px-6 py-4"></td>{" "}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
     </div>
-    
   );
 }
-
