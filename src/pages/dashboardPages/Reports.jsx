@@ -1,58 +1,117 @@
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import getToken from '../../utils/getToken';
+import PropTypes from 'prop-types';
+
+const getLastMonthDate = () => {
+  const date = new Date();
+  date.setMonth(date.getMonth() - 1);
+  return date.toISOString().split('T')[0];
+};
+
+const getDaysDate = (days) => {
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  return date.toISOString().split('T')[0];
+};
 
 export default function Reports() {
-  const [spendingData] = useState([
-    { date: '2024-03-20', amount: 45.50 },
-    { date: '2024-03-19', amount: 32.75 },
-    { date: '2024-03-18', amount: 67.20 },
-    { date: '2024-03-17', amount: 23.40 },
-    { date: '2024-03-16', amount: 89.90 },
-    { date: '2024-03-15', amount: 12.30 },
-    { date: '2024-03-14', amount: 54.60 },
-  ]);
+  const [spendingData, setSpendingData] = useState([]);
+  const [sinceDate, setSinceDate] = useState(getDaysDate(7));
+  useEffect(() => {
+    async function fetchSpendingData() {
+      const token = getToken();
+      const res = await axios.get(
+        'http://localhost:5000/api/accounts/reports',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            since_date: sinceDate,
+          },
+        }
+      );
 
-  const totalSpent = spendingData.reduce((sum, item) => sum + item.amount, 0);
+      const data = res.data.map((item) => ({
+        amount: Number(item.amount),
+        date: item.created_at,
+        type: item.name.toLowerCase(),
+      }));
+      setSpendingData(data);
+    }
 
+    fetchSpendingData();
+  }, [sinceDate]);
+
+  const handleChange = (event) => {
+    const value = event.target.value;
+
+    switch (value) {
+      case 'last7':
+        setSinceDate(getDaysDate(7));
+        break;
+      case 'last14':
+        setSinceDate(getDaysDate(14));
+        break;
+      case 'thisMonth':
+        setSinceDate(getLastMonthDate());
+        break;
+    }
+  };
+
+  const totalSpent = spendingData.reduce(
+    (sum, item) =>
+      item.type === 'external_transfer' || item.type === 'withdraw'
+        ? sum + item.amount
+        : sum,
+    0
+  );
   return (
     <div className="min-h-screen w-full py-8 sm:py-12 overflow-x-hidden">
       <div className="w-full max-w-md mx-auto px-4 relative">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
           Reports
         </h1>
-        
-        
+
         <div className="mb-6">
-          <select className="w-full p-2.5 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            <option>Last 7 days</option>
-            <option>Last 14 days</option>
-            <option>This month</option>
+          <select
+            className="w-full p-2.5 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onChange={handleChange}
+          >
+            <option value="last7">Last 7 days</option>
+            <option value="last14">Last 14 days</option>
+            <option value="thisMonth">This month</option>
           </select>
         </div>
 
-        
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm p-6 text-white mb-6">
-          <h2 className="text-2xl font-bold text-center">€{totalSpent.toFixed(2)}</h2>
+          <h2
+            className={`text-2xl font-bold text-center ${
+              totalSpent !== 0 && 'text-red-500'
+            }`}
+          >
+            €{totalSpent === 0 ? -totalSpent.toFixed(2) : totalSpent.toFixed(2)}
+          </h2>
           <p className="text-blue-100 mt-1 text-center">Last 7 days</p>
         </div>
 
-        
         <div className="bg-white rounded-xl shadow-sm p-6">
-          
           <div className="space-y-3">
             {spendingData.map((item) => (
-              <div 
-                key={item.date} 
+              <div
+                key={item.date}
                 className="flex justify-between items-center p-4 border border-gray-200 rounded-xl"
               >
                 <div className="text-gray-800">
                   {new Date(item.date).toLocaleDateString('en-US', {
                     weekday: 'long',
                     month: 'long',
-                    day: 'numeric'
+                    day: 'numeric',
                   })}
                 </div>
                 <div className="font-semibold text-gray-800">
-                €{item.amount.toFixed(2)}
+                  <Amount name={item.type} amount={item.amount.toFixed(2)} />
                 </div>
               </div>
             ))}
@@ -62,3 +121,23 @@ export default function Reports() {
     </div>
   );
 }
+
+function Amount({ name, amount }) {
+  switch (name.toLowerCase()) {
+    case 'external_transfer':
+      return <span className="text-red-500">-{amount}€</span>;
+    case 'internal_transfer':
+      return <span className="text-green-500">+{amount}€</span>;
+    case 'withdraw':
+      return <span className="text-red-500">-{amount}€</span>;
+    case 'deposit':
+      return <span className="text-green-500">+{amount}€</span>;
+    default:
+      return <span className="text-green-500">+{amount}€</span>;
+  }
+}
+
+Amount.propTypes = {
+  name: PropTypes.string,
+  amount: PropTypes.number,
+};
