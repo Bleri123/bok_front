@@ -63,7 +63,6 @@ export default function Dashboard() {
   );
 }
 
-// DONT JUDGE ME THIS IS THE BEST CODE IN HUMAN EXISTANCE
 function useAccounts() {
   const [accounts, setAccounts] = useState(null);
   const [error, setError] = useState(null);
