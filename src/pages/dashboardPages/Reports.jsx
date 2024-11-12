@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import getToken from '../../utils/getToken';
+import PropTypes from 'prop-types';
 
 const getLastMonthDate = () => {
   const date = new Date();
@@ -59,11 +60,11 @@ export default function Reports() {
     }
   };
 
-  console.log(spendingData)
-
   const totalSpent = spendingData.reduce(
     (sum, item) =>
-      item.type === 'external_transfer' ? sum + item.amount : sum,
+      item.type === 'external_transfer' || item.type === 'withdraw'
+        ? sum + item.amount
+        : sum,
     0
   );
   return (
@@ -85,8 +86,12 @@ export default function Reports() {
         </div>
 
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm p-6 text-white mb-6">
-          <h2 className="text-2xl font-bold text-center">
-            €{totalSpent.toFixed(2)}
+          <h2
+            className={`text-2xl font-bold text-center ${
+              totalSpent !== 0 && 'text-red-500'
+            }`}
+          >
+            €{totalSpent === 0 ? -totalSpent.toFixed(2) : totalSpent.toFixed(2)}
           </h2>
           <p className="text-blue-100 mt-1 text-center">Last 7 days</p>
         </div>
@@ -106,7 +111,7 @@ export default function Reports() {
                   })}
                 </div>
                 <div className="font-semibold text-gray-800">
-                  €{item.amount.toFixed(2)}
+                  <Amount name={item.type} amount={item.amount.toFixed(2)} />
                 </div>
               </div>
             ))}
@@ -116,3 +121,23 @@ export default function Reports() {
     </div>
   );
 }
+
+function Amount({ name, amount }) {
+  switch (name.toLowerCase()) {
+    case 'external_transfer':
+      return <span className="text-red-500">-{amount}€</span>;
+    case 'internal_transfer':
+      return <span className="text-green-500">+{amount}€</span>;
+    case 'withdraw':
+      return <span className="text-red-500">-{amount}€</span>;
+    case 'deposit':
+      return <span className="text-green-500">+{amount}€</span>;
+    default:
+      return <span className="text-green-500">+{amount}€</span>;
+  }
+}
+
+Amount.propTypes = {
+  name: PropTypes.string,
+  amount: PropTypes.number,
+};

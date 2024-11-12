@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 
 import getToken from '../../utils/getToken';
 
-
 export default function Balance() {
   const { error, selectedAccount } = getSelectedAccount();
   const { isAdmin } = useOutletContext();
@@ -42,7 +41,7 @@ export default function Balance() {
           <p>loading...</p>
         ) : (
           <div className="mt-4 px-4 flex flex-col justify-center items-center w-full">
-            {transactionHistory.map(({amount, name, fixed_fee, id}) => {
+            {transactionHistory.map(({ amount, name, fixed_fee, id }) => {
               return (
                 <Fragment key={id}>
                   <div className="border-b-2 border-gray-300 w-full my-2" />
@@ -70,11 +69,11 @@ export default function Balance() {
   );
 }
 
-function Amount({name, amount}){
+function Amount({ name, amount }) {
   switch (name.toLowerCase()) {
     case 'external_transfer':
-      return <span>{amount}€</span>;
-    case 'internal_transfare':
+      return <span className="text-red-500">-{amount}€</span>;
+    case 'internal_transfer':
       return <span className="text-green-500">+{amount}€</span>;
     case 'withdraw':
       return <span className="text-red-500">-{amount}€</span>;
@@ -84,7 +83,6 @@ function Amount({name, amount}){
       return <span className="text-green-500">+{amount}€</span>;
   }
 }
-
 
 function useTransactionHistory() {
   const token = getToken();
@@ -115,8 +113,7 @@ function useTransactionHistory() {
   return { transactionHistory, loading, error };
 }
 
-
 Amount.propTypes = {
   name: PropTypes.string,
-  amount: PropTypes.number
+  amount: PropTypes.number,
 };
