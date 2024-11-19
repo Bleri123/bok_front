@@ -1,18 +1,41 @@
 import { Navigate, useOutletContext } from "react-router-dom";
 import getSelectedAccount from "../../utils/getSelectedAccount";
 import { Footer } from "../../components/Footer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { WithdrawModal } from "../../components/WithdrawModal";
+import axios from "axios";
+import getToken from "../../utils/getToken";
 
 export default function Withdraw() {
   const { error } = getSelectedAccount();
   const { isAdmin } = useOutletContext();
   const [amount, setAmount] = useState(0);
   const [notification, setNotification] = useState("");
+  const [notificationStatus, setNotificationStatus] = useState("");
   const [selectedButton, setSelectedButton] = useState(null); // Track the selected button
-
-  // Change showModal to a state variable
   const [showModal, setShowModal] = useState(false);
+  const [userAccounts, setUserAccounts] = useState([]); // State to hold user accounts
+  const [selectedAccount, setSelectedAccount] = useState(null); // State to hold the selected account
+  const token = getToken();
+
+  const getUserAccounts = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/accounts/logged/user",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setUserAccounts(response?.data);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  useEffect(() => {
+    getUserAccounts();
+  }, []);
 
   // Function to toggle the modal
   const toggleModal = () => {
@@ -26,14 +49,45 @@ export default function Withdraw() {
   const handleAmountSelect = (selectedAmount) => {
     setAmount(selectedAmount);
     setNotification("");
+    setNotificationStatus("");
     setSelectedButton(selectedAmount); // Set the selected button
   };
 
-  const handleWithdraw = (withdrawnAmount = amount) => {
+  const handleAccountSelect = (account) => {
+    setSelectedAccount(account); // Update the selected account state
+  };
+
+  const handleWithdraw = async (withdrawnAmount = amount) => {
     if (typeof withdrawnAmount === "number" && withdrawnAmount > 0) {
-      setNotification(`Successfully withdrew: ${withdrawnAmount}€`); // Update notification with the withdrawn amount
-      setSelectedButton(null); // Reset selected button after withdrawal
+      const data = {
+        chosen_value: withdrawnAmount,
+        account_type_id: selectedAccount?.account_type_id,
+      };
+      console.log("data", data);
+
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/accounts/user/withdraw",
+          data,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setNotificationStatus("success");
+        setNotification(
+          response?.data?.message ||
+            `Successfully withdrew: ${withdrawnAmount}€`
+        );
+
+        setSelectedButton(null);
+      } catch (error) {
+        setNotificationStatus("error");
+        setNotification(
+          error?.response?.data?.message || "An error has occurred"
+        );
+      }
     } else {
+      setNotificationStatus("error");
       setNotification("Invalid amount"); // Handle invalid amount
     }
   };
@@ -57,14 +111,42 @@ export default function Withdraw() {
           Withdrawal
         </h1>
         {notification && (
-          <div className="text-tprimary text-sm text-center mb-4 md:text-xl">
+          <div
+            className={`${
+              notificationStatus === "success" ? "text-green" : "text-red-500"
+            } text-sm text-center mb-4 md:text-xl`}
+          >
             {notification}
           </div>
         )}
+        <div className="mb-4 flex mx-16">
+          <select
+            value={selectedAccount?.account_type_id}
+            onChange={(e) =>
+              handleAccountSelect(
+                userAccounts.find(
+                  (account) =>
+                    account.account_type_id === parseInt(e.target.value)
+                )
+              )
+            }
+            className="form-select block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          >
+            <option value="">Select an account</option>
+            {userAccounts.map((account) => (
+              <option
+                key={account.account_type_id}
+                value={account.account_type_id}
+              >
+                {account.account_number} - {account.type}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="flex justify-center mb-4 gap-4 xl:gap-36">
           <button
             onClick={() => handleAmountSelect(10)}
-            className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
+            className={`text-white  p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
               showModal
                 ? "bg-primary"
                 : selectedButton === 10
@@ -90,7 +172,7 @@ export default function Withdraw() {
         <div className="flex justify-center mb-4 gap-4 xl:gap-36">
           <button
             onClick={() => handleAmountSelect(50)}
-            className={`text-white p-3 w-full max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
+            className={`text-white p-3 w-full  max-w-[140px] rounded-md md:max-w-[300px] md:h-[70px] md:text-2xl ${
               showModal
                 ? "bg-primary"
                 : selectedButton === 50
@@ -133,6 +215,7 @@ export default function Withdraw() {
             Enter Number
           </button>
         </div>
+
         <button
           onClick={() => handleWithdraw(amount)} // Ensure `amount` is passed correctly
           className="bg-primary text-tprimary p-4 mt-4 w-full max-w-[180px] mx-auto rounded-md text-2xl md:max-w-[400px]"
