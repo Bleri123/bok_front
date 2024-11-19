@@ -1,7 +1,15 @@
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import getToken from "../utils/getToken";
+import removeToken from "../utils/removeToken";
 
 export default function DashboardSideBar({ show, links }) {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    const token = getToken();
+    if (token) removeToken();
+    navigate("/login");
+  };
   return (
     <div
       className={`w-[200px] bg-primary lg:w-[200px] xl:w-[240px] flex flex-col style="
@@ -13,6 +21,9 @@ export default function DashboardSideBar({ show, links }) {
             <Link to={link}>{text}</Link>
           </li>
         ))}
+        <li className="cursor-pointer" onClick={() => handleLogout()}>
+          Logout
+        </li>
       </ul>
     </div>
   );
