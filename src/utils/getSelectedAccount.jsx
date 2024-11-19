@@ -1,15 +1,24 @@
 import { useContext } from 'react';
-import { AccountsContext, SelectedAccountContext } from '../pages/Dashboard';
+import { SelectedAccountContext } from '../pages/Dashboard';
+import useAccounts from './useAccounts';
 
-export default function useSelectedAccount(){
-    const { accounts, error } = useContext(AccountsContext);
-    const { selectedAccountIndex: index } = useContext(SelectedAccountContext);
+export default function useSelectedAccount() {
+  const { accounts, error } = useAccounts();
+  let { selectedAccountIndex: index } = useContext(SelectedAccountContext);
 
-    if(!accounts || accounts.length === 0){
-        return {selectedAccount: null, error: 'No accounts exist for this user', accounts}
-    }
+  if (!index) {
+    index = 0;
+  }
 
-    const selectedAccount = accounts[index];
+  if (!accounts || accounts.length === 0) {
+    return {
+      selectedAccount: null,
+      error: 'No accounts exist for this user',
+      accounts,
+    };
+  }
 
-    return {selectedAccount, error, accounts};
+  const selectedAccount = accounts[index];
+
+  return { selectedAccount, error, accounts };
 }
