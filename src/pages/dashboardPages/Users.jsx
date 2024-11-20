@@ -90,7 +90,7 @@ export default function Users() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-hidden">
       <div className="flex justify-center p-4">
         <button
           onClick={() => setIsModalOpen(true)}
@@ -111,19 +111,18 @@ export default function Users() {
           handleSearch={handleSearch}
         />
       )}
-      <div className="p-6">
-        <table className="w-full text-left text-gray-200">
+      <div className="overflow-x-auto text-xs lg:text-sm xl:text-lg 2xl:text-xl">
+        <table className="w-full text-center text-gray-200">
           <thead className="uppercase bg-[#172554]/70 text-gray-200">
             <tr>
-              <th className="px-6 py-3 rounded-tl-lg">Nr</th>
-              <th className="px-6 py-3">Name/Surname</th>
-              <th className="px-6 py-3">Email</th>
-              <th className="px-6 py-3">Account Type</th>
-              <th className="px-6 py-3">Role</th>
-              <th className="px-6 py-3">Status</th>
-              <th className="px-6 py-3">City</th>
-              <th className="px-6 py-3">Zip Code</th>
-              <th className="px-6 py-3 rounded-tr-lg"></th>
+              <th className="px-2 py-3 rounded-tl-lg">Nr</th>
+              <th className="px-2 py-3">Name/Surname</th>
+              <th className="px-2 py-3">Email</th>
+              <th className="px-2 py-3">Account Type</th>
+              <th className="px-2 py-3">Role</th>
+              <th className="px-2 py-3">Status</th>
+              <th className="px-2 py-3">City</th>
+              <th className="px-2 py-3 rounded-tr-lg">Zip Code</th>
             </tr>
           </thead>
           <tbody>
@@ -132,18 +131,17 @@ export default function Users() {
                 key={user.id}
                 className="bg-[#60a5fa]/10 border-b border-gray-700"
               >
-                <td className="px-6 py-4">{index + 1}</td>{" "}
+                <td className="px-2 py-4">{index + 1}</td>{" "}
                 {/* Display row number */}
-                <td className="px-6 py-4 font-medium">
+                <td className="px-2 py-4 font-medium">
                   {user.first_name} {user.last_name}
                 </td>{" "}
-                <td className="px-6 py-4">{user.email}</td>{" "}
-                <td className="px-6 py-4">accounts</td>{" "}
-                <td className="px-6 py-4">{user.role_name}</td>{" "}
-                <td className="px-6 py-4">{user.account_status}</td>{" "}
-                <td className="px-6 py-4">{user.city}</td>{" "}
-                <td className="px-6 py-4">{user.zip_code}</td>{" "}
-                <td className="px-6 py-4"></td>{" "}
+                <td className="px-2 py-4">{user.email}</td>{" "}
+                <td className="px-2 py-4">accounts</td>{" "}
+                <td className="px-2 py-4">{user.role_name}</td>{" "}
+                <td className="px-2 py-4">{user.account_status}</td>{" "}
+                <td className="px-2 py-4">{user.city}</td>{" "}
+                <td className="px-2 py-4">{user.zip_code}</td>{" "}
               </tr>
             ))}
           </tbody>
