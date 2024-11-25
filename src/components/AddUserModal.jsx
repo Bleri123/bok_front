@@ -131,7 +131,11 @@ const AddUserModal = ({ onClose }) => {
             <button type="button" onClick={onClose} className="bg-gray-400 text-white rounded p-2 hover:bg-gray-500 transition">
               Back
             </button>
-            <button type="submit" className="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 transition">
+            <button
+              type="submit"
+              style={{ backgroundColor: '#3B82F6', color: 'white' }} // Inline styles for visibility
+              className="rounded p-2 hover:bg-blue-700 transition"
+            >
               Create
             </button>
           </div>
