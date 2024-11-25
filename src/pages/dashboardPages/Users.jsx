@@ -122,7 +122,10 @@ export default function Users() {
               <th className="px-2 py-3">Role</th>
               <th className="px-2 py-3">Status</th>
               <th className="px-2 py-3">City</th>
-              <th className="px-2 py-3 rounded-tr-lg">Zip Code</th>
+              <th className="px-2 py-3">Zip Code</th>
+              <th className="px-2 py-3 rounded-tr-lg">
+                <button className="bg-balancebg2 rounded w-[70px]">+</button>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -142,6 +145,9 @@ export default function Users() {
                 <td className="px-2 py-4">{user.account_status}</td>{" "}
                 <td className="px-2 py-4">{user.city}</td>{" "}
                 <td className="px-2 py-4">{user.zip_code}</td>{" "}
+                <td className="px-2 py-4">
+                  <button className="bg-primary rounded w-[70px]">Edit</button>
+                </td>{" "}
               </tr>
             ))}
           </tbody>
