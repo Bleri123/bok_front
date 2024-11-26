@@ -1,8 +1,7 @@
 import { Navigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
 import UsersModal from "../../components/UsersModal";
-import AddUserModal from '../../components/AddUserModal';
-
+import AddUserModal from "../../components/AddUserModal";
 
 export default function Users() {
   const { isAdmin } = useOutletContext();
