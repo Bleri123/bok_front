@@ -2,6 +2,7 @@ import { Navigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
 import UsersModal from "../../components/UsersModal";
 import AddUserModal from '../../components/AddUserModal';
+import EditUserModal from '../../components/EditUserModal';
 
 
 export default function Users() {
@@ -13,6 +14,7 @@ export default function Users() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false); // State for Add User modal
   const [allUsers, setAllUsers] = useState([]); // State to hold all users
+  const [selectedUser, setSelectedUser] = useState(null); // State for the selected user
 
   console.log("isAdmin:", isAdmin);
 
@@ -88,6 +90,16 @@ export default function Users() {
     }
   };
 
+  const handleEditUser = (user) => {
+    setSelectedUser(user); // Set the selected user for editing
+  };
+
+  const handleSaveUser = (updatedUser) => {
+    // Logic to save the updated user (e.g., API call)
+    console.log("Updated User:", updatedUser);
+    // Update the allUsers state if necessary
+  };
+
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -158,14 +170,27 @@ export default function Users() {
                 <td className="px-2 py-4">{user.account_status}</td>{" "}
                 <td className="px-2 py-4">{user.city}</td>{" "}
                 <td className="px-2 py-4">{user.zip_code}</td>{" "}
-                <td className="px-2 py-4">
-                  <button className="bg-primary rounded w-[70px]">Edit</button>
+                <td className="px-2 psey-4">
+                  <button
+                    onClick={() => handleEditUser(user)} // Open modal with user data
+                    className="bg-primary rounded w-[70px]"
+                  >
+                    Edit
+                  </button>
                 </td>{" "}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {selectedUser && ( // Render the modal if a user is selected
+        <EditUserModal
+          user={selectedUser}
+          onClose={() => setSelectedUser(null)}
+          onSave={handleSaveUser}
+        />
+      )}
     </div>
   );
 }
