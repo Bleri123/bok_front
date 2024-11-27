@@ -5,7 +5,7 @@ import AccountTypeModal from "./AccountTypeModal"; // Import the AccountTypeModa
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-const AddUserModal = ({ onClose }) => {
+const AddUserModal = ({ onClose, onUserRegistrationSuccess }) => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -14,22 +14,19 @@ const AddUserModal = ({ onClose }) => {
     status: "",
     accountType: [], // Initialize accountType with Debit always checked
     pin: "",
-    role: "",
+    roleId: "",
     city: "",
     zipCode: "",
   });
 
   const [isAccountTypeModalOpen, setIsAccountTypeModalOpen] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleAccountTypeSelect = (type) => {
-    const updatedAccountType = formData.accountType.includes(type)
-      ? formData.accountType.filter((account) => account !== type)
-      : [...formData.accountType, type];
+  const handleAccountTypeSelect = (accountType) => {
+    const updatedAccountType = formData.accountType.some(
+      (account) => account.id === accountType.id
+    )
+      ? formData.accountType.filter((account) => account.id !== accountType.id)
+      : [...formData.accountType, accountType]; // Add the entire account type object
     setFormData({ ...formData, accountType: updatedAccountType });
     setIsAccountTypeModalOpen(false); // Close the modal after selection
   };
@@ -57,10 +54,33 @@ const AddUserModal = ({ onClose }) => {
     roleId: Yup.string().required("Role is required"),
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("User Data:", formData);
-    onClose(); // Close the modal after submission
+  const handleSubmit = async (values) => {
+    let accountTypesArray = formData.accountType.map((account) => account.id);
+    values.accountTypes = accountTypesArray;
+
+    console.log("Form Data before submission:", values);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5000/auth/register", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("User Data:", data);
+      onUserRegistrationSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   const [accountStatuses, setAccountStatuses] = useState([]);
@@ -113,22 +133,11 @@ const AddUserModal = ({ onClose }) => {
         <h2 className="text-2xl font-semibold mb-6">Create User</h2>
 
         <Formik
-          initialValues={{
-            firstName: "",
-            lastName: "",
-            email: "",
-            phoneNumber: "",
-            status: "",
-            accountType: [], // Initialize accountType with Debit always checked
-            pin: "",
-            roleId: "",
-            city: "",
-            zipCode: "",
-          }}
+          initialValues={formData}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                 <div>
@@ -186,7 +195,7 @@ const AddUserModal = ({ onClose }) => {
                   >
                     <option value="" label="Select Status" />
                     {accountStatuses.map((status) => (
-                      <option key={status.id} value={status.name}>
+                      <option key={status.id} value={status.id}>
                         {status.name}
                       </option>
                     ))}
@@ -203,7 +212,9 @@ const AddUserModal = ({ onClose }) => {
                 >
                   {
                     formData.accountType.length > 0
-                      ? formData.accountType.join(", ") // Display selected account types
+                      ? formData.accountType
+                          .map((account) => account.type)
+                          .join(", ") // Display selected account types
                       : "Select Account Type" // Placeholder when no account types are selected
                   }
                 </div>
@@ -229,8 +240,7 @@ const AddUserModal = ({ onClose }) => {
                     <option value="" label="Select Role" />
                     {roles.map((role) => (
                       <option key={role.id} value={role.id}>
-                        {role.type}{" "}
-                        {/* Assuming 'type' is the name of the role */}
+                        {role.name}{" "}
                       </option>
                     ))}
                   </Field>

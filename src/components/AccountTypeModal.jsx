@@ -35,7 +35,7 @@ const AccountTypeModal = ({ onClose, onSelect }) => {
           {accountTypes.map((type) => (
             <button
               key={type.id} // Use the unique id for the key
-              onClick={() => onSelect(type.type)} // Use the type field for selection
+              onClick={() => onSelect(type)} // Use the type field for selection
               className="bg-gray-800 text-white rounded p-3 hover:bg-gray-700 transition"
             >
               {type.type} {/* Display the account type */}
