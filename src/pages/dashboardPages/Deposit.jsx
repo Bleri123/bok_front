@@ -1,52 +1,65 @@
-import React, { useEffect, useState } from "react";
-import { Footer } from "../../components/Footer";
-import { DepositModal } from "../../components/DepositModal";
+import { useEffect, useState } from 'react';
+import { Footer } from '../../components/Footer';
+import { DepositModal } from '../../components/DepositModal';
+import useAccounts from '../../utils/useAccounts';
+import useSelectedAccount from '../../utils/getSelectedAccount';
+import axios from 'axios';
+import getToken from '../../utils/getToken';
+import PropTypes from 'prop-types';
 
 export default function Deposit() {
   const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [credit, setCredit] = useState(() => {
-    // Retrieve initial credit amount from local storage or set default
-    const savedCredit = localStorage.getItem("credit");
-    return savedCredit ? parseFloat(savedCredit) : 400.0;
-  });
-  const [debit, setDebit] = useState(() => {
-    // Retrieve initial debit amount from local storage or set default
-    const savedDebit = localStorage.getItem("debit");
-    return savedDebit ? parseFloat(savedDebit) : 20.0;
-  });
-  const [savings, setSavings] = useState(() => {
-    // Retrieve initial savings amount from local storage or set default
-    const savedSavings = localStorage.getItem("savings");
-    return savedSavings ? parseFloat(savedSavings) : 1600.0;
-  });
-  const [selectedAccount, setSelectedAccount] = useState("");
+  const [modalMessage, setModalMessage] = useState('');
+  const [credit, setCredit] = useState(null);
+  const [savings, setSavings] = useState(null);
+  const [debit, setDebit] = useState(null);
+  const { accounts, error } = useAccounts();
+  const { selectedAccount } = useSelectedAccount();
 
   useEffect(() => {
-    // Save balances to local storage whenever they change
-    localStorage.setItem("credit", credit);
-    localStorage.setItem("debit", debit);
-    localStorage.setItem("savings", savings);
-  }, [credit, debit, savings]);
+    if (accounts) {
+      setCredit(
+        accounts.find((account) => account.type.toLowerCase() === 'credit')
+      );
+      setSavings(
+        accounts.find((account) => account.type.toLowerCase() === 'savings')
+      );
+      setDebit(
+        accounts.find((account) => account.type.toLowerCase() === 'debit')
+      );
+    }
+  }, [accounts]);
 
-  const toggleModal = (message, account) => {
+  if (error) {
+    return <h1>Error loading accounts</h1>;
+  }
+
+  const deposit = async (amount) => {
+    const token = getToken();
+    try {
+      await axios.post(
+        'http://localhost:5000/api/transactions/deposit',
+        { amount: amount, account_id: selectedAccount.account_id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (e) {
+      if (e.response?.data) {
+        alert(`Error: ${e.response.data}`);
+      } else {
+        alert('An unexpected error occurred');
+      }
+    }
+
+    axios.post();
+  };
+
+  const toggleModal = (message) => {
     setModalMessage(message);
-    setSelectedAccount(account);
     setShowModal((prev) => !prev);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-  };
-
-  const updateAccount = (amount) => {
-    if (selectedAccount === "Credit") {
-      setCredit(credit + amount);
-    } else if (selectedAccount === "Debit") {
-      setDebit(debit + amount);
-    } else if (selectedAccount === "Savings") {
-      setSavings(savings + amount);
-    }
   };
 
   return (
@@ -55,7 +68,8 @@ export default function Deposit() {
         <DepositModal
           onClose={handleCloseModal}
           message={modalMessage}
-          updateAccount={updateAccount}
+          selectedAccount={selectedAccount.type}
+          updateAccount={deposit}
         />
       )}
       <div className="flex-grow flex flex-col items-center mt-11">
@@ -64,42 +78,53 @@ export default function Deposit() {
           id="Cards"
           className="flex flex-col bg-secondary items-center p-4 w-[200px] rounded-md mt-6 md:w-[450px] lg:w-[670px]"
         >
-          <div id="card" className="flex flex-col items-center mb-4">
-            <button
-              onClick={() => toggleModal("Credit", "Credit")}
-              className="bg-primary text-white p-2 rounded w-[150px] h-[70px] text-2xl md:w-[350px] md:h-[100px] md:text-3xl lg:w-[450px] lg:text-4xl mt-5"
-            >
-              Credit
-            </button>
-            <p className="text-lg md:text-2xl lg:text-3xl">
-              {credit.toFixed(2)}€
-            </p>
-          </div>
-          <div id="card" className="flex flex-col items-center mb-4">
-            <button
-              onClick={() => toggleModal("Debit", "Debit")}
-              className="bg-primary text-white p-2 rounded w-[150px] h-[70px] text-2xl md:w-[350px] md:h-[100px] md:text-3xl lg:w-[450px] lg:text-4xl"
-            >
-              Debit
-            </button>
-            <p className="text-lg md:text-2xl lg:text-3xl">
-              {debit.toFixed(2)}€
-            </p>
-          </div>
-          <div id="card" className="flex flex-col items-center mb-4">
-            <button
-              onClick={() => toggleModal("Savings", "Savings")}
-              className="bg-primary text-white p-2 rounded w-[150px] h-[70px] text-2xl md:w-[350px] md:h-[100px] md:text-3xl lg:w-[450px] lg:text-4xl"
-            >
-              Savings
-            </button>
-            <p className="text-lg md:text-2xl lg:text-3xl">
-              {savings.toFixed(2)}€
-            </p>
-          </div>
+          <Card
+            amount={Number(credit?.balance)}
+            text={'Credit'}
+            toggleModal={toggleModal}
+            accountType={'Credit'}
+          />
+          <Card
+            amount={Number(savings?.balance)}
+            text={'Savings'}
+            accountType={'Savings'}
+            toggleModal={toggleModal}
+          />
+          <Card
+            amount={Number(debit?.balance)}
+            text={'Debit'}
+            accountType={'Debit'}
+            toggleModal={toggleModal}
+          />
         </div>
       </div>
       <Footer />
     </div>
   );
 }
+
+function Card({ toggleModal, amount, text, accountType }) {
+  if (!amount) {
+    return null;
+  }
+
+  return (
+    <div id="card" className="flex flex-col items-center mb-4">
+      <button
+        onClick={() => toggleModal(accountType)}
+        className="bg-primary text-white p-2 rounded w-[150px] h-[70px] text-2xl md:w-[350px] md:h-[100px] md:text-3xl lg:w-[450px] lg:text-4xl"
+      >
+        {text}
+      </button>
+      <p className="text-lg md:text-2xl lg:text-3xl">{amount}€</p>
+    </div>
+  );
+}
+
+Card.propTypes = {
+  toggleModal: PropTypes.func,
+  amount: PropTypes.number,
+  text: PropTypes.string,
+  accountType: PropTypes.string
+};
+
