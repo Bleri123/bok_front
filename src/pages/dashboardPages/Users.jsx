@@ -1,6 +1,7 @@
 import { Navigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
 import UsersModal from "../../components/UsersModal";
+import AddUserModal from "../../components/AddUserModal";
 
 export default function Users() {
   const { isAdmin } = useOutletContext();
@@ -9,6 +10,7 @@ export default function Users() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false); // State for Add User modal
   const [allUsers, setAllUsers] = useState([]); // State to hold all users
 
   console.log("isAdmin:", isAdmin);
@@ -111,6 +113,11 @@ export default function Users() {
           handleSearch={handleSearch}
         />
       )}
+
+      {isAddUserModalOpen && ( // Render Add User modal
+        <AddUserModal onClose={() => setIsAddUserModalOpen(false)} />
+      )}
+
       <div className="overflow-x-auto text-xs lg:text-sm xl:text-lg 2xl:text-xl">
         <table className="w-full text-center text-gray-200">
           <thead className="uppercase bg-[#172554]/70 text-gray-200">
@@ -122,7 +129,15 @@ export default function Users() {
               <th className="px-2 py-3">Role</th>
               <th className="px-2 py-3">Status</th>
               <th className="px-2 py-3">City</th>
-              <th className="px-2 py-3 rounded-tr-lg">Zip Code</th>
+              <th className="px-2 py-3">Zip Code</th>
+              <th className="px-2 py-3 rounded-tr-lg">
+                <button
+                  onClick={() => setIsAddUserModalOpen(true)} // Open the modal when "+" is clicked
+                  className="bg-balancebg2 rounded w-[70px]"
+                >
+                  +
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -142,6 +157,9 @@ export default function Users() {
                 <td className="px-2 py-4">{user.account_status}</td>{" "}
                 <td className="px-2 py-4">{user.city}</td>{" "}
                 <td className="px-2 py-4">{user.zip_code}</td>{" "}
+                <td className="px-2 py-4">
+                  <button className="bg-primary rounded w-[70px]">Edit</button>
+                </td>{" "}
               </tr>
             ))}
           </tbody>
