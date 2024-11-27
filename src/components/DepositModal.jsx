@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export const DepositModal = ({ onClose, message, updateAccount }) => {
+export const DepositModal = ({ onClose, message, selectedAccount, updateAccount }) => {
   const [amount, setAmount] = useState("");
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export const DepositModal = ({ onClose, message, updateAccount }) => {
     };
   }, [onClose]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const parsedAmount = parseFloat(amount.replace(",", ".")); // Convert to float
     if (!isNaN(parsedAmount) && parsedAmount > 0) {
       updateAccount(parsedAmount); // Update the selected account
@@ -45,7 +45,7 @@ export const DepositModal = ({ onClose, message, updateAccount }) => {
               onClick={onClose}
             />
             <h2 className="text-lg font-semibold text-center mt-2 md:text-2xl">
-              Selected account
+              {selectedAccount}
             </h2>
             <h2 className="text-2xl font-bold text-center md:text-3xl lg:mb-5">
               {message}
