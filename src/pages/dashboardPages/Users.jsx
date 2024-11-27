@@ -17,33 +17,36 @@ export default function Users() {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [allUsers, setAllUsers] = useState([]); // State to hold all users
 
+  console.log("isAdmin:", isAdmin);
+
+  // Move fetchAllUsers function outside of useEffect
+  const fetchAllUsers = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`http://localhost:5000/api/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch users");
+
+      const users = await response.json();
+
+      setAllUsers(users); // Store all users in state
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      setError("Error fetching users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Call fetchAllUsers in useEffect
   useEffect(() => {
-    const fetchAllUsers = async () => {
-      setLoading(true);
-      try {
-        const token = localStorage.getItem('token');
-
-        const response = await fetch(`http://localhost:5000/api/users`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) throw new Error('Failed to fetch users');
-
-        const users = await response.json();
-
-        setAllUsers(users); // Store all users in state
-      } catch (err) {
-        console.error('Error fetching users:', err);
-
-        setError('Error fetching users');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchAllUsers(); // Call the function to fetch users
   }, []);
 
@@ -115,7 +118,12 @@ export default function Users() {
       )}
 
       {isAddUserModalOpen && ( // Render Add User modal
-        <AddUserModal onClose={() => setIsAddUserModalOpen(false)} />
+        <AddUserModal
+          onClose={() => setIsAddUserModalOpen(false)}
+          onUserRegistrationSuccess={() => {
+            fetchAllUsers();
+          }}
+        />
       )}
 
       {
@@ -154,7 +162,7 @@ export default function Users() {
                 {/* Display row number */}
                 <td className="px-2 py-4 font-medium">
                   {user.first_name} {user.last_name}
-                </td>{' '}
+                </td>{" "}
                 <td className="px-2 py-4">{user.email}</td>{' '}
                 <td
                   className="px-2 py-4 text-slate-200 font-bold cursor-pointer"
@@ -166,9 +174,10 @@ export default function Users() {
                   accounts
                 </td>{' '}
                 <td className="px-2 py-4">{user.role_name}</td>{' '}
-                <td className="px-2 py-4">{user.account_status}</td>{' '}
+                <td className="px-2 py-4">{user.user_account_status}</td>{" "}
                 <td className="px-2 py-4">{user.city}</td>{' '}
                 <td className="px-2 py-4">{user.zip_code}</td>{' '}
+
                 <td className="px-2 py-4">
                   <button className="bg-primary rounded w-[70px]">Edit</button>
                 </td>{' '}
