@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 const EditUserDetailsModal = ({ user, onClose, onSave }) => {
   const [formData, setFormData] = useState(user);

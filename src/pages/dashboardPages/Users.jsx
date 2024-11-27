@@ -17,7 +17,7 @@ export default function Users() {
   //This is used when showAccountsModal is shown so that we know which user we are talking about
   const [currentUserId, setCurrentUserId] = useState(null);
   const [allUsers, setAllUsers] = useState([]); // State to hold all users
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null); // State for the selected user
 
   console.log("isAdmin:", isAdmin);
 
