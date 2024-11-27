@@ -15,7 +15,9 @@ const EditStatusModal = ({ currentStatus, onClose, onSave }) => {
       <div className="bg-gray-100 rounded-lg shadow-lg p-6 w-96 relative">
         <h2 className="text-lg font-semibold mb-4">Edit Status</h2>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Current Status</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Current Status
+          </label>
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import ConfirmRemoveUserModal from './ConfirmRemoveUserModal';
-import EditUserDetailsModal from './EditUserDetailsModal';
-import EditStatusModal from './EditStatusModal';
+import React, { useState } from "react";
+import ConfirmRemoveUserModal from "./ConfirmRemoveUserModal";
+import EditUserDetailsModal from "./EditUserDetailsModal";
+import EditStatusModal from "./EditStatusModal";
 
 const EditUserModal = ({ user, onClose, onSave }) => {
   const [isConfirmRemoveOpen, setIsConfirmRemoveOpen] = useState(false);

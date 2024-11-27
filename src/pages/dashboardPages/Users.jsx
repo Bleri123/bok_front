@@ -1,15 +1,16 @@
-import { Navigate, useOutletContext } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import UsersModal from '../../components/UsersModal';
-import AddUserModal from '../../components/AddUserModal';
-
+import { Navigate, useOutletContext } from "react-router-dom";
+import { useState, useEffect } from "react";
+import UsersModal from "../../components/UsersModal";
+import AddUserModal from "../../components/AddUserModal";
+import AccountsModal from "../../components/accountsModal";
+import EditUserModal from "../../components/EditUserModal";
 
 export default function Users() {
   const { isAdmin } = useOutletContext();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false); // State for Add User modal
   const [showAccountsModal, setshowAccountsModal] = useState(false);
@@ -55,37 +56,37 @@ export default function Users() {
     if (!email.trim()) return;
 
     setLoading(true);
-    setError('');
+    setError("");
     setUserInfo(null);
 
     try {
-      const token = localStorage.getItem('token');
-      console.log('Making API call with email:', email);
+      const token = localStorage.getItem("token");
+      console.log("Making API call with email:", email);
 
       const response = await fetch(`http://localhost:5000/api/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
-      if (!response.ok) throw new Error('User not found');
+      if (!response.ok) throw new Error("User not found");
 
       const allUsers = await response.json();
-      console.log('All users:', allUsers);
+      console.log("All users:", allUsers);
 
       // Find the specific user by email
       const foundUser = allUsers.find((user) => user.email === email);
 
       if (!foundUser) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
 
-      console.log('Found user object:', foundUser);
+      console.log("Found user object:", foundUser);
       setUserInfo(foundUser);
     } catch (err) {
-      console.error('Error:', err);
-      setError('User not found or error occurred');
+      console.error("Error:", err);
+      setError("User not found or error occurred");
     } finally {
       setLoading(false);
     }
@@ -137,9 +138,13 @@ export default function Users() {
         />
       )}
 
-      {
-        showAccountsModal && <AccountsModal userId={currentUserId} isVisible={showAccountsModal} setIsVisible={setshowAccountsModal}/>
-      }
+      {showAccountsModal && (
+        <AccountsModal
+          userId={currentUserId}
+          isVisible={showAccountsModal}
+          setIsVisible={setshowAccountsModal}
+        />
+      )}
 
       <div className="overflow-x-auto text-xs lg:text-sm xl:text-lg 2xl:text-xl">
         <table className="w-full text-center text-gray-200">
@@ -169,19 +174,32 @@ export default function Users() {
                 key={user.id}
                 className="bg-[#60a5fa]/10 border-b border-gray-700"
               >
-                <td className="px-2 py-4">{index + 1}</td>{' '}
+                <td className="px-2 py-4">{index + 1}</td>{" "}
                 {/* Display row number */}
                 <td className="px-2 py-4 font-medium">
                   {user.first_name} {user.last_name}
                 </td>{" "}
                 <td className="px-2 py-4">{user.email}</td>{" "}
-                <td className="px-2 py-4">accounts</td>{" "}
+                <td
+                  className="px-2 py-4 text-slate-200 font-bold cursor-pointer"
+                  onClick={() => {
+                    setshowAccountsModal(true);
+                    setCurrentUserId(user.id);
+                  }}
+                >
+                  accounts
+                </td>{" "}
                 <td className="px-2 py-4">{user.role_name}</td>{" "}
-                <td className="px-2 py-4">{user.account_status}</td>{" "}
+                <td className="px-2 py-4">{user.user_account_status}</td>{" "}
                 <td className="px-2 py-4">{user.city}</td>{" "}
                 <td className="px-2 py-4">{user.zip_code}</td>{" "}
                 <td className="px-2 py-4">
-                  <button className="bg-primary rounded w-[70px]">Edit</button>
+                  <button
+                    className="bg-primary rounded w-[70px]"
+                    onClick={() => handleEditUser(user)} // Call handleEditUser with the user
+                  >
+                    Edit
+                  </button>
                 </td>{" "}
               </tr>
             ))}

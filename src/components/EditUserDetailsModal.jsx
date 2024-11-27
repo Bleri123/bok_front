@@ -21,7 +21,9 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
         <h2 className="text-lg font-semibold mb-4">Edit Users</h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Name
+            </label>
             <input
               type="text"
               name="name"
@@ -32,7 +34,9 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Surname</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Surname
+            </label>
             <input
               type="text"
               name="surname"
@@ -43,7 +47,9 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -54,7 +60,9 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Account Type</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Account Type
+            </label>
             <input
               type="text"
               name="accountType"
@@ -65,7 +73,9 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">PIN</label>
+            <label className="block text-sm font-medium text-gray-700">
+              PIN
+            </label>
             <input
               type="text"
               name="pin"
@@ -76,7 +86,9 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Phone Number
+            </label>
             <input
               type="text"
               name="phoneNumber"
@@ -87,7 +99,9 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Account Status</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Account Status
+            </label>
             <input
               type="text"
               name="accountStatus"
@@ -98,7 +112,9 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Account Type/s</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Account Type/s
+            </label>
             <input
               type="text"
               name="accountTypes"
@@ -109,7 +125,9 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">City</label>
+            <label className="block text-sm font-medium text-gray-700">
+              City
+            </label>
             <input
               type="text"
               name="city"
@@ -120,7 +138,9 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Zip Code</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Zip Code
+            </label>
             <input
               type="text"
               name="zipCode"
