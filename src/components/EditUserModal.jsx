@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import ConfirmRemoveUserModal from "./ConfirmRemoveUserModal";
 import EditUserDetailsModal from "./EditUserDetailsModal";
 import EditStatusModal from "./EditStatusModal";
+import axios from "axios";
+import getToken from "../utils/getToken";
+import toast from "react-hot-toast";
 
 const EditUserModal = ({ user, onClose, onSave }) => {
   const [isConfirmRemoveOpen, setIsConfirmRemoveOpen] = useState(false);
@@ -11,10 +14,28 @@ const EditUserModal = ({ user, onClose, onSave }) => {
   const handleRemoveUser = () => {
     setIsConfirmRemoveOpen(true);
   };
+  const handleConfirmRemove = async () => {
+    try {
+      console.log("User removed:", user);
+      const token = getToken();
 
-  const handleConfirmRemove = () => {
-    console.log("User removed:", user);
-    onClose();
+      const res = await axios.put(
+        `http://localhost:5000/api/users/set/user/inactive/${user?.id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log("res: ", res);
+      onClose();
+      toast.success("User successfully updated", {
+        duration: 4000,
+        position: "top-right",
+      });
+    } catch (error) {
+      console.error("Error removing user:", error);
+    }
   };
 
   const handleEditUserDetails = (updatedUser) => {
