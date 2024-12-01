@@ -17,9 +17,8 @@ export default function Users() {
   //This is used when showAccountsModal is shown so that we know which user we are talking about
   const [currentUserId, setCurrentUserId] = useState(null);
   const [allUsers, setAllUsers] = useState([]); // State to hold all users
+  const [userAccountStatus, setUserAccountStatus] = useState([]); // State to hold all users
   const [selectedUser, setSelectedUser] = useState(null); // State for the selected user
-
-  console.log("isAdmin:", isAdmin);
 
   // Move fetchAllUsers function outside of useEffect
   const fetchAllUsers = async () => {
@@ -47,9 +46,37 @@ export default function Users() {
     }
   };
 
-  // Call fetchAllUsers in useEffect
+  const fetchUserStatusAccounts = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `http://localhost:5000/api/users/user-account-statuses`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to fetch users");
+
+      const statuses = await response.json();
+
+      setUserAccountStatus(statuses);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      setError("Error fetching users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchAllUsers(); // Call the function to fetch users
+    fetchAllUsers();
+    fetchUserStatusAccounts();
   }, []);
 
   const handleSearch = async () => {
@@ -215,6 +242,8 @@ export default function Users() {
           user={selectedUser}
           onClose={() => setSelectedUser(null)}
           onSave={handleSaveUser}
+          userAccountStatus={userAccountStatus}
+          fetchAllUsers={fetchAllUsers}
         />
       )}
     </div>

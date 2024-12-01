@@ -1,24 +1,52 @@
+import axios from "axios";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const EditUserDetailsModal = ({ user, onClose, onSave }) => {
   const [formData, setFormData] = useState(user);
+  console.log("user", user);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data Submitted:", formData);
-    onSave(formData);
-    onClose();
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `http://localhost:5000/api/users/${user.id}/update`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("response: ", response);
+      const data = response.data;
+      console.log("Update successful:", data);
+      toast.success("User successfully updated", {
+        duration: 4000,
+        position: "top-right",
+      });
+
+      onSave(data, formData);
+      onClose();
+    } catch (error) {
+      console.error("Error updating user:", error);
+      onClose();
+    }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-gray-100 rounded-lg shadow-lg p-6 w-120 relative">
-        <h2 className="text-lg font-semibold mb-4">Edit Users</h2>
+        <h2 className="text-lg font-semibold mb-4">Edit User</h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -26,8 +54,8 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             </label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="first_name"
+              value={formData.first_name}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 w-full"
               placeholder="Name"
@@ -39,50 +67,11 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             </label>
             <input
               type="text"
-              name="surname"
-              value={formData.surname}
+              name="last_name"
+              value={formData.last_name}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 w-full"
               placeholder="Surname"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2 w-full"
-              placeholder="Email"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Account Type
-            </label>
-            <input
-              type="text"
-              name="accountType"
-              value={formData.accountType}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2 w-full"
-              placeholder="Account Type"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              PIN
-            </label>
-            <input
-              type="text"
-              name="pin"
-              value={formData.pin}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2 w-full"
-              placeholder="PIN"
             />
           </div>
           <div>
@@ -91,37 +80,11 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             </label>
             <input
               type="text"
-              name="phoneNumber"
-              value={formData.phoneNumber}
+              name="phone_number"
+              value={formData.phone_number}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 w-full"
               placeholder="Phone Number"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Account Status
-            </label>
-            <input
-              type="text"
-              name="accountStatus"
-              value={formData.accountStatus}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2 w-full"
-              placeholder="Account Status"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Account Type/s
-            </label>
-            <input
-              type="text"
-              name="accountTypes"
-              value={formData.accountTypes}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2 w-full"
-              placeholder="Account Type/s"
             />
           </div>
           <div>
@@ -143,8 +106,8 @@ const EditUserDetailsModal = ({ user, onClose, onSave }) => {
             </label>
             <input
               type="text"
-              name="zipCode"
-              value={formData.zipCode}
+              name="zip_code"
+              value={formData.zip_code}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 w-full"
               placeholder="Zip Code"

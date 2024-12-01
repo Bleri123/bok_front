@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-const EditStatusModal = ({ currentStatus, onClose, onSave }) => {
-  const [selectedStatus, setSelectedStatus] = useState(currentStatus);
-  const statuses = ["Active", "Passive", "Suspended", "Banned"];
+const EditStatusModal = ({ user, onClose, onSave, userAccountStatus }) => {
+  const [selectedStatus, setSelectedStatus] = useState(2);
+
+  useEffect(() => {
+    console.log("user_account_status", user?.user_account_status);
+
+    const user_account_status_id = userAccountStatus?.find(
+      (item) => item?.name == user?.user_account_status
+    )?.id;
+
+    setSelectedStatus(user_account_status_id);
+  }, []);
 
   const handleSave = () => {
-    console.log("Saving status:", selectedStatus);
     onSave(selectedStatus);
     onClose();
   };
@@ -23,9 +31,9 @@ const EditStatusModal = ({ currentStatus, onClose, onSave }) => {
             onChange={(e) => setSelectedStatus(e.target.value)}
             className="border border-gray-300 rounded-md p-2 w-full"
           >
-            {statuses.map((status) => (
-              <option key={status} value={status}>
-                {status}
+            {userAccountStatus.map((status) => (
+              <option key={status?.id} value={status?.id}>
+                {status?.name}
               </option>
             ))}
           </select>

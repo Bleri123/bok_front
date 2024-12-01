@@ -6,19 +6,23 @@ import axios from "axios";
 import getToken from "../utils/getToken";
 import toast from "react-hot-toast";
 
-const EditUserModal = ({ user, onClose, onSave }) => {
+const EditUserModal = ({
+  user,
+  onClose,
+  onSave,
+  userAccountStatus,
+  fetchAllUsers,
+}) => {
   const [isConfirmRemoveOpen, setIsConfirmRemoveOpen] = useState(false);
   const [isEditUserDetailsOpen, setIsEditUserDetailsOpen] = useState(false);
   const [isEditStatusOpen, setIsEditStatusOpen] = useState(false);
+  const token = getToken();
 
   const handleRemoveUser = () => {
     setIsConfirmRemoveOpen(true);
   };
   const handleConfirmRemove = async () => {
     try {
-      console.log("User removed:", user);
-      const token = getToken();
-
       const res = await axios.put(
         `http://localhost:5000/api/users/set/user/inactive/${user?.id}`,
         {},
@@ -27,8 +31,9 @@ const EditUserModal = ({ user, onClose, onSave }) => {
         }
       );
 
-      console.log("res: ", res);
       onClose();
+      await fetchAllUsers();
+
       toast.success("User successfully updated", {
         duration: 4000,
         position: "top-right",
@@ -38,16 +43,42 @@ const EditUserModal = ({ user, onClose, onSave }) => {
     }
   };
 
-  const handleEditUserDetails = (updatedUser) => {
+  const handleEditUserDetails = async (updatedUser) => {
     console.log("User details updated:", updatedUser);
-    setIsEditUserDetailsOpen(false);
+
     onSave(updatedUser);
+
+    setIsEditUserDetailsOpen(false);
+    await fetchAllUsers();
+    onClose();
   };
 
-  const handleEditStatus = (newStatus) => {
-    console.log("Status updated to:", newStatus);
-    setIsEditStatusOpen(false);
-    // Logic to update the status in your state or API
+  const handleEditStatus = async (newStatus) => {
+    try {
+      const data = { user_account_status_id: newStatus };
+
+      await axios.put(
+        `http://localhost:5000/api/users/set/user/account/status/${user?.id}`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      await fetchAllUsers();
+      toast.success("User successfully updated", {
+        duration: 4000,
+        position: "top-right",
+      });
+      setIsEditStatusOpen(false);
+      onClose();
+    } catch (error) {
+      console.error("Error updating user status:", error);
+      toast.error("Failed to update user status", {
+        duration: 4000,
+        position: "top-right",
+      });
+    }
   };
 
   return (
@@ -105,9 +136,10 @@ const EditUserModal = ({ user, onClose, onSave }) => {
 
       {isEditStatusOpen && (
         <EditStatusModal
-          currentStatus="Active"
+          user={user}
           onClose={() => setIsEditStatusOpen(false)}
           onSave={handleEditStatus}
+          userAccountStatus={userAccountStatus}
         />
       )}
     </div>
