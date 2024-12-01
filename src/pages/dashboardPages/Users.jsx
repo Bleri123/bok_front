@@ -93,13 +93,15 @@ export default function Users() {
   };
 
   const handleEditUser = (user) => {
-    setSelectedUser(user); // Set the selected user for editing
+    setSelectedUser(user);
   };
 
   const handleSaveUser = (updatedUser) => {
-    // Logic to save the updated user (e.g., API call)
     console.log("Updated User:", updatedUser);
-    // Update the allUsers state if necessary
+  };
+
+  const handleConfirmRemove = async () => {
+    fetchAllUsers();
   };
 
   if (!isAdmin) {
@@ -129,7 +131,7 @@ export default function Users() {
         />
       )}
 
-      {isAddUserModalOpen && ( // Render Add User modal
+      {isAddUserModalOpen && (
         <AddUserModal
           onClose={() => setIsAddUserModalOpen(false)}
           onUserRegistrationSuccess={() => {
@@ -160,7 +162,7 @@ export default function Users() {
               <th className="px-2 py-3">Zip Code</th>
               <th className="px-2 py-3 rounded-tr-lg">
                 <button
-                  onClick={() => setIsAddUserModalOpen(true)} // Open the modal when "+" is clicked
+                  onClick={() => setIsAddUserModalOpen(true)}
                   className="bg-balancebg2 rounded w-[70px]"
                 >
                   +
@@ -169,40 +171,41 @@ export default function Users() {
             </tr>
           </thead>
           <tbody>
-            {allUsers.map((user, index) => (
-              <tr
-                key={user.id}
-                className="bg-[#60a5fa]/10 border-b border-gray-700"
-              >
-                <td className="px-2 py-4">{index + 1}</td>{" "}
-                {/* Display row number */}
-                <td className="px-2 py-4 font-medium">
-                  {user.first_name} {user.last_name}
-                </td>{" "}
-                <td className="px-2 py-4">{user.email}</td>{" "}
-                <td
-                  className="px-2 py-4 text-slate-200 font-bold cursor-pointer"
-                  onClick={() => {
-                    setshowAccountsModal(true);
-                    setCurrentUserId(user.id);
-                  }}
+            {allUsers
+              .filter((user) => user.user_account_status === "Active")
+              .map((user, index) => (
+                <tr
+                  key={user.id}
+                  className="bg-[#60a5fa]/10 border-b border-gray-700"
                 >
-                  accounts
-                </td>{" "}
-                <td className="px-2 py-4">{user.role_name}</td>{" "}
-                <td className="px-2 py-4">{user.user_account_status}</td>{" "}
-                <td className="px-2 py-4">{user.city}</td>{" "}
-                <td className="px-2 py-4">{user.zip_code}</td>{" "}
-                <td className="px-2 py-4">
-                  <button
-                    className="bg-primary rounded w-[70px]"
-                    onClick={() => handleEditUser(user)} // Call handleEditUser with the user
+                  <td className="px-2 py-4">{index + 1}</td>
+                  <td className="px-2 py-4 font-medium">
+                    {user.first_name} {user.last_name}
+                  </td>
+                  <td className="px-2 py-4">{user.email}</td>
+                  <td
+                    className="px-2 py-4 text-slate-200 font-bold cursor-pointer"
+                    onClick={() => {
+                      setshowAccountsModal(true);
+                      setCurrentUserId(user.id);
+                    }}
                   >
-                    Edit
-                  </button>
-                </td>{" "}
-              </tr>
-            ))}
+                    accounts
+                  </td>
+                  <td className="px-2 py-4">{user.role_name}</td>
+                  <td className="px-2 py-4">{user.user_account_status}</td>
+                  <td className="px-2 py-4">{user.city}</td>
+                  <td className="px-2 py-4">{user.zip_code}</td>
+                  <td className="px-2 py-4">
+                    <button
+                      className="bg-primary rounded w-[70px]"
+                      onClick={() => handleEditUser(user)}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
