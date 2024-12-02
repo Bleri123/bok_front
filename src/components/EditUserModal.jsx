@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ConfirmRemoveUserModal from "./ConfirmRemoveUserModal";
 import EditUserDetailsModal from "./EditUserDetailsModal";
 import EditStatusModal from "./EditStatusModal";
+import ChangePinModal from "./ChangePinModal";
 import axios from "axios";
 import getToken from "../utils/getToken";
 import toast from "react-hot-toast";
@@ -16,6 +17,7 @@ const EditUserModal = ({
   const [isConfirmRemoveOpen, setIsConfirmRemoveOpen] = useState(false);
   const [isEditUserDetailsOpen, setIsEditUserDetailsOpen] = useState(false);
   const [isEditStatusOpen, setIsEditStatusOpen] = useState(false);
+  const [isChangePinOpen, setIsChangePinOpen] = useState(false);
   const token = getToken();
 
   const handleRemoveUser = () => {
@@ -81,6 +83,10 @@ const EditUserModal = ({
     }
   };
 
+  const handleUserPinChanged = () => {
+    console.log("Pin changed successfully for selected user!");
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white rounded-lg shadow-lg p-6 w-96 relative">
@@ -113,8 +119,7 @@ const EditUserModal = ({
           <button
             type="button"
             onClick={() => {
-              console.log("Edit Status button clicked");
-              setIsEditStatusOpen(true);
+              setIsChangePinOpen(true);
             }}
             className="bg-primary text-white rounded-md px-4 py-2 hover:bg-blue-600 flex justify-center gap-3"
           >
@@ -190,6 +195,14 @@ const EditUserModal = ({
           onClose={() => setIsEditStatusOpen(false)}
           onSave={handleEditStatus}
           userAccountStatus={userAccountStatus}
+        />
+      )}
+
+      {isChangePinOpen && (
+        <ChangePinModal
+          user={user}
+          onClose={() => setIsChangePinOpen(false)}
+          onSave={handleUserPinChanged}
         />
       )}
     </div>
