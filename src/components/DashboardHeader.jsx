@@ -3,7 +3,11 @@ import BOKLogo from "../assets/BOKLOGO.png";
 import getSelectedAccount from "../utils/getSelectedAccount";
 import { useState } from "react";
 
-export default function DashboardHeader({ showSideBar, sideBarActive }) {
+export default function DashboardHeader({
+  showSideBar,
+  sideBarActive,
+  isAdmin,
+}) {
   const { selectedAccount } = getSelectedAccount();
   const [isActive, setIsActive] = useState(false);
 
@@ -92,7 +96,7 @@ export default function DashboardHeader({ showSideBar, sideBarActive }) {
       <div className="p-2 text-secondary flex-1">
         <div className="flex h-[50%] items-center pr-20 pl-4 pt-2 pb-4 border-b-2 ">
           <h1 className="mr-[auto] text-4xl font-bold w-min">BOK</h1>
-          {selectedAccount && (
+          {!isAdmin && selectedAccount && (
             <p className="ml-7 text-[12px]">
               <span>Selected account number: </span>{" "}
               {selectedAccount.account_number}
@@ -110,4 +114,5 @@ export default function DashboardHeader({ showSideBar, sideBarActive }) {
 DashboardHeader.propTypes = {
   showSideBar: PropTypes.func,
   sideBarActive: PropTypes.bool,
+  isAdmin: PropTypes.bool,
 };

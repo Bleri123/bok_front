@@ -1,11 +1,11 @@
-import { createContext, useEffect } from 'react';
-import DashboardHeader from '../components/DashboardHeader';
-import axios from 'axios';
-import getToken from '../utils/getToken';
-import { useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import DashboardUserSideBar from '../components/DashboardUserSideBar';
-import DashboardAdminSideBar from '../components/DashboardAdminSideBar';
+import { createContext, useEffect } from "react";
+import DashboardHeader from "../components/DashboardHeader";
+import axios from "axios";
+import getToken from "../utils/getToken";
+import { useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import DashboardUserSideBar from "../components/DashboardUserSideBar";
+import DashboardAdminSideBar from "../components/DashboardAdminSideBar";
 
 export const AccountsContext = createContext([]);
 export const SelectedAccountContext = createContext(null);
@@ -20,7 +20,7 @@ export default function Dashboard() {
       async function fetch() {
         const token = getToken();
         try {
-          const res = await axios.get('http://localhost:5000/auth/isAdmin', {
+          const res = await axios.get("http://localhost:5000/auth/isAdmin", {
             headers: { Authorization: `Bearer ${token}` },
           });
           setIsAdmin(res.data.isAdmin);
@@ -45,6 +45,7 @@ export default function Dashboard() {
         <DashboardHeader
           showSideBar={setshowSideBarMobile}
           sideBarActive={showSideBarMobile}
+          isAdmin={isAdmin}
         />
         <div className="flex min-h-full align-baseline">
           {isAdmin ? (
