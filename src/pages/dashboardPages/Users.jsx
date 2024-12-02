@@ -12,15 +12,14 @@ export default function Users() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false); // State for Add User modal
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [showAccountsModal, setshowAccountsModal] = useState(false);
-  //This is used when showAccountsModal is shown so that we know which user we are talking about
   const [currentUserId, setCurrentUserId] = useState(null);
-  const [allUsers, setAllUsers] = useState([]); // State to hold all users
-  const [userAccountStatus, setUserAccountStatus] = useState([]); // State to hold all users
-  const [selectedUser, setSelectedUser] = useState(null); // State for the selected user
+  const [allUsers, setAllUsers] = useState([]);
+  const [userAccountStatus, setUserAccountStatus] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("Active");
 
-  // Move fetchAllUsers function outside of useEffect
   const fetchAllUsers = async () => {
     setLoading(true);
     try {
@@ -102,7 +101,6 @@ export default function Users() {
       const allUsers = await response.json();
       console.log("All users:", allUsers);
 
-      // Find the specific user by email
       const foundUser = allUsers.find((user) => user.email === email);
 
       if (!foundUser) {
@@ -129,6 +127,10 @@ export default function Users() {
 
   const handleConfirmRemove = async () => {
     fetchAllUsers();
+  };
+
+  const handleStatusChange = (newStatus) => {
+    setSelectedStatus(newStatus);
   };
 
   if (!isAdmin) {
@@ -184,7 +186,30 @@ export default function Users() {
               <th className="px-2 py-3">Email</th>
               <th className="px-2 py-3">Account Type</th>
               <th className="px-2 py-3">Role</th>
-              <th className="px-2 py-3">Status</th>
+              <th className="px-2 py-3">
+                <div className="flex justify-center">
+                  <select
+                    value={`Status: ${selectedStatus}`}
+                    onChange={(e) =>
+                      handleStatusChange(e.target.value.replace("Status: ", ""))
+                    }
+                    className="bg-transparent text-secondary border border-balancebg rounded text-center"
+                  >
+                    <option value="Status: Active">
+                      Status: {selectedStatus}
+                    </option>
+                    {userAccountStatus.map((status) => (
+                      <option
+                        key={status.id}
+                        value={status.name}
+                        className="text-black"
+                      >
+                        {status.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </th>
               <th className="px-2 py-3">City</th>
               <th className="px-2 py-3">Zip Code</th>
               <th className="px-2 py-3 rounded-tr-lg">
@@ -198,46 +223,56 @@ export default function Users() {
             </tr>
           </thead>
           <tbody>
-            {allUsers
-              .filter((user) => user.user_account_status === "Active")
-              .map((user, index) => (
-                <tr
-                  key={user.id}
-                  className="bg-[#60a5fa]/10 border-b border-gray-700"
-                >
-                  <td className="px-2 py-4">{index + 1}</td>
-                  <td className="px-2 py-4 font-medium">
-                    {user.first_name} {user.last_name}
-                  </td>
-                  <td className="px-2 py-4">{user.email}</td>
-                  <td
-                    className="px-2 py-4 text-slate-200 font-bold cursor-pointer"
-                    onClick={() => {
-                      setshowAccountsModal(true);
-                      setCurrentUserId(user.id);
-                    }}
+            {allUsers.filter(
+              (user) => user.user_account_status === selectedStatus
+            ).length === 0 ? (
+              <tr>
+                <td colSpan="8" className="px-2 py-4 text-center text-gray-500">
+                  No users exist for the selected status.
+                </td>
+              </tr>
+            ) : (
+              allUsers
+                .filter((user) => user.user_account_status === selectedStatus)
+                .map((user, index) => (
+                  <tr
+                    key={user.id}
+                    className="bg-[#60a5fa]/10 border-b border-gray-700"
                   >
-                    accounts
-                  </td>
-                  <td className="px-2 py-4">{user.role_name}</td>
-                  <td className="px-2 py-4">{user.user_account_status}</td>
-                  <td className="px-2 py-4">{user.city}</td>
-                  <td className="px-2 py-4">{user.zip_code}</td>
-                  <td className="px-2 py-4">
-                    <button
-                      className="bg-primary rounded w-[70px]"
-                      onClick={() => handleEditUser(user)}
+                    <td className="px-2 py-4">{index + 1}</td>
+                    <td className="px-2 py-4 font-medium">
+                      {user.first_name} {user.last_name}
+                    </td>
+                    <td className="px-2 py-4">{user.email}</td>
+                    <td
+                      className="px-2 py-4 text-slate-200 underline font-bold cursor-pointer"
+                      onClick={() => {
+                        setshowAccountsModal(true);
+                        setCurrentUserId(user.id);
+                      }}
                     >
-                      Edit
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                      accounts
+                    </td>
+                    <td className="px-2 py-4">{user.role_name}</td>
+                    <td className="px-2 py-4">{user.user_account_status}</td>
+                    <td className="px-2 py-4">{user.city}</td>
+                    <td className="px-2 py-4">{user.zip_code}</td>
+                    <td className="px-2 py-4">
+                      <button
+                        className="bg-primary rounded w-[70px]"
+                        onClick={() => handleEditUser(user)}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))
+            )}
           </tbody>
         </table>
       </div>
 
-      {selectedUser && ( // Render the modal if a user is selected
+      {selectedUser && (
         <EditUserModal
           user={selectedUser}
           onClose={() => setSelectedUser(null)}

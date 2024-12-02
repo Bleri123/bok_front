@@ -35,6 +35,7 @@ function AboutUs() {
               https://github.com/T0niel
             </a>
           </p>
+
           <p className="flex justify-center text-sm sm:text-2xl md:text-3xl pt-6">
             <span className="mr-3">Bleon Nasufi:</span>
             <a
@@ -46,6 +47,7 @@ function AboutUs() {
               https://github.com/Bleri123
             </a>
           </p>
+
           <p className="flex justify-center text-sm sm:text-2xl md:text-3xl pt-6">
             <span className="mr-3">Edi Pajaziti:</span>
             <a
