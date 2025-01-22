@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import getToken from '../utils/getToken';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import getToken from "../utils/getToken";
 
 export default function AccountsModal({ userId, isVisible, setIsVisible }) {
   const [accounts, setAccounts] = useState([]);
@@ -8,7 +8,7 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
   useEffect(() => {
     const fetchAccounts = async () => {
       const token = getToken();
-      const res = await axios.get('http://localhost:5000/api/accounts/all', {
+      const res = await axios.get("http://localhost:5000/api/accounts/all", {
         headers: { Authorization: `Bearer ${token}` },
         params: { userId },
       });
@@ -45,17 +45,16 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
                   <th className="py-3 px-4">Type</th>
                   <th className="py-3 px-4">Balance</th>
                   <th className="py-3 px-4">Created At</th>
+                  <th className="py-3 px-4 text-center">
+                    <button className="bg-balancebg2 rounded w-[70px]">
+                      +
+                    </button>
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {accounts.map(
-                  ({
-                    account_number,
-                    status,
-                    type,
-                    balance,
-                    created_at,
-                  }) => (
+                  ({ account_number, status, type, balance, created_at }) => (
                     <tr
                       key={account_number}
                       className="bg-[#243045] hover:bg-[#2a3c55] transition-colors"
@@ -63,9 +62,16 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
                       <td className="py-3 px-4">{account_number}</td>
                       <td className="py-3 px-4">{status}</td>
                       <td className="py-3 px-4">{type}</td>
-                      <td className="py-3 px-4">${Number(balance).toFixed(2)}</td>
+                      <td className="py-3 px-4">
+                        ${Number(balance).toFixed(2)}
+                      </td>
                       <td className="py-3 px-4">
                         {new Date(created_at).toLocaleDateString()}
+                      </td>
+                      <td className="text-center">
+                        <button className="bg-primary rounded w-[70px]">
+                          Edit
+                        </button>
                       </td>
                     </tr>
                   )
