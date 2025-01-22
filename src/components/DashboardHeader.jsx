@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import BOKLogo from "../assets/BOKLOGO.png";
+import newBOKlogo from "../assets/newBOKlogo.png";
 import getSelectedAccount from "../utils/getSelectedAccount";
 import { useState } from "react";
 
