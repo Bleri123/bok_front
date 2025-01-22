@@ -89,7 +89,7 @@ export default function DashboardHeader({
       <div>
         <img
           className="hidden md:block w-[140px] h-[110px] md:w-[200px] md:h-[150px] lg:border-b-2 lg:border-r-2 lg:w-[200px] xl:h-[190px] xl:w-[240px]"
-          src={BOKLogo}
+          src={newBOKlogo}
           alt="bank of kosovo logo"
         />
       </div>

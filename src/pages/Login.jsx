@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types';
-import BOKLogo from '../assets/BOKLOGO.png';
-import { Formik, Form, Field } from 'formik';
-import axios from 'axios';
-import * as Yup from 'yup';
-import { useState } from 'react';
-import { Navigate, Link, useNavigate } from 'react-router-dom';
-import storeToken from '../utils/storeToken';
+import PropTypes from "prop-types";
+import BOKLogo from "../assets/BOKLOGO.png";
+import { Formik, Form, Field } from "formik";
+import axios from "axios";
+import * as Yup from "yup";
+import { useState } from "react";
+import { Navigate, Link, useNavigate } from "react-router-dom";
+import storeToken from "../utils/storeToken";
 
 const SignupSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Email is required'),
-  pin: Yup.string().max(32).required('Pin is required'),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  pin: Yup.string().max(32).required("Pin is required"),
 });
 
 function CustomField({ name, type, placeholder, isValid }) {
@@ -18,7 +18,7 @@ function CustomField({ name, type, placeholder, isValid }) {
       name={name}
       type={type}
       className={`w-full p-2 border-b-2 border-gray-400 ${
-        isValid ? 'border-gray-400' : 'border-red-400'
+        isValid ? "border-gray-400" : "border-red-400"
       }`}
       placeholder={placeholder}
     />
@@ -30,7 +30,7 @@ function CustomError({ children }) {
 }
 
 export function LoginPage() {
-  const savedToken = localStorage.getItem('token');
+  const savedToken = localStorage.getItem("token");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ export function LoginPage() {
       <div className="flex flex-col items-center max-w-[700px] w-full md:w-[80%]">
         <Link to="/">
           <img
-            src={BOKLogo}
+            src={newBOKlogo}
             alt="bank of kosovo logo"
             className="w-56 h-auto"
           />
@@ -55,19 +55,19 @@ export function LoginPage() {
           </h1>
           <Formik
             initialValues={{
-              email: '',
-              pin: '',
+              email: "",
+              pin: "",
             }}
             validationSchema={SignupSchema}
             onSubmit={async (values) => {
               try {
                 const res = await axios.post(
-                  'http://localhost:5000/auth/login',
+                  "http://localhost:5000/auth/login",
                   values
                 );
                 setError(null);
                 storeToken(res.data.token);
-                navigate('/dashboard', {
+                navigate("/dashboard", {
                   replace: true,
                 });
               } catch (e) {

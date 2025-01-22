@@ -35,7 +35,17 @@ function AboutUs() {
               https://github.com/T0niel
             </a>
           </p>
-
+          <p className="flex justify-center text-sm sm:text-2xl md:text-3xl pt-6">
+            <span className="mr-3">Astrit Shala</span>
+            <a
+              href="https://github.com/Astrit02"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue"
+            >
+              https://github.com/Astrit02
+            </a>
+          </p>
           <p className="flex justify-center text-sm sm:text-2xl md:text-3xl pt-6">
             <span className="mr-3">Bleon Nasufi:</span>
             <a
@@ -68,6 +78,17 @@ function AboutUs() {
               className="text-blue"
             >
               https://github.com/qema00
+            </a>
+          </p>
+          <p className="flex justify-center text-sm sm:text-2xl md:text-3xl pt-6">
+            <span className="mr-3">Dijar Çerkezi</span>
+            <a
+              href="https://github.com/DijarCerkezi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue"
+            >
+              https://github.com/DijarCerkezi
             </a>
           </p>
           <p className="flex justify-center text-sm sm:text-2xl md:text-3xl pt-6">
