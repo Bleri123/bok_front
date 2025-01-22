@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import BOKLogo from "../assets/BOKLOGO.png";
+import newBOKlogo from "../assets/newBOKlogo.png";
 import { Formik, Form, Field } from "formik";
 import axios from "axios";
 import * as Yup from "yup";
