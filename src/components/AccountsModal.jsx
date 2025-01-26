@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import getToken from "../utils/getToken";
+import AddAccountTypeModal from "./AddAccountTypeModal";
 
 export default function AccountsModal({ userId, isVisible, setIsVisible }) {
   const [accounts, setAccounts] = useState([]);
+  const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -46,7 +48,10 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
                   <th className="py-3 px-4">Balance</th>
                   <th className="py-3 px-4">Created At</th>
                   <th className="py-3 px-4 text-center">
-                    <button className="bg-balancebg2 rounded w-[70px]">
+                    <button
+                      onClick={() => setIsAddAccountModalOpen(true)}
+                      className="bg-balancebg2 rounded w-[70px]"
+                    >
                       +
                     </button>
                   </th>
@@ -83,6 +88,12 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
           <p className="text-gray-400 text-center mt-4">
             No accounts found for this user.
           </p>
+        )}
+        {isAddAccountModalOpen && (
+          <AddAccountTypeModal
+            isOpen={isAddAccountModalOpen}
+            onRequestClose={() => setIsAddAccountModalOpen(false)}
+          />
         )}
       </div>
     </div>
