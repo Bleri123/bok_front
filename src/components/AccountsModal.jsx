@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import PropTypes from "prop-types";
 import getToken from "../utils/getToken";
 import AddAccountTypeModal from "./AddAccountTypeModal";
 
@@ -25,6 +26,18 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
     setIsVisible(false);
   };
 
+  // Add this function to check if user has all account types
+  const hasAllAccountTypes = () => {
+    const accountTypeSet = new Set(
+      accounts.map((account) => account.type.toLowerCase())
+    );
+    return (
+      accountTypeSet.has("debit") &&
+      accountTypeSet.has("credit") &&
+      accountTypeSet.has("savings")
+    );
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -36,7 +49,7 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
         >
           &times;
         </button>
-        <h2 className="text-white text-2xl font-semibold mb-4">Accounts</h2>
+        <h2 className="text-white text-2xl font-semibold">Accounts</h2>
         {accounts.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-gray-300">
@@ -48,12 +61,17 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
                   <th className="py-3 px-4">Balance</th>
                   <th className="py-3 px-4">Created At</th>
                   <th className="py-3 px-4 text-center">
-                    <button
-                      onClick={() => setIsAddAccountModalOpen(true)}
-                      className="bg-balancebg2 rounded w-[70px]"
-                    >
-                      +
-                    </button>
+                    <div>
+                      {!hasAllAccountTypes() && (
+                        <button
+                          onClick={() => setIsAddAccountModalOpen(true)}
+                          className="bg-balancebg2 w-[70px] text-white rounded hover:bg-blue-600"
+                          title="Add new account"
+                        >
+                          +
+                        </button>
+                      )}
+                    </div>
                   </th>
                 </tr>
               </thead>
@@ -93,9 +111,16 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
           <AddAccountTypeModal
             isOpen={isAddAccountModalOpen}
             onRequestClose={() => setIsAddAccountModalOpen(false)}
+            user_id={userId}
           />
         )}
       </div>
     </div>
   );
 }
+
+AccountsModal.propTypes = {
+  userId: PropTypes.string.isRequired,
+  isVisible: PropTypes.bool.isRequired,
+  setIsVisible: PropTypes.func.isRequired,
+};
