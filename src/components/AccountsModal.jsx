@@ -3,10 +3,13 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import getToken from "../utils/getToken";
 import AddAccountTypeModal from "./AddAccountTypeModal";
+import EditAccountModal from "./EditAccountModal";
 
 export default function AccountsModal({ userId, isVisible, setIsVisible }) {
   const [accounts, setAccounts] = useState([]);
   const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState(null);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -36,6 +39,11 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
       accountTypeSet.has("credit") &&
       accountTypeSet.has("savings")
     );
+  };
+
+  const handleEditClick = (account) => {
+    setSelectedAccount(account);
+    setIsEditModalOpen(true);
   };
 
   if (!isVisible) return null;
@@ -77,7 +85,14 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
               </thead>
               <tbody>
                 {accounts.map(
-                  ({ account_number, status, type, balance, created_at }) => (
+                  ({
+                    account_number,
+                    account_status_id,
+                    status,
+                    type,
+                    balance,
+                    created_at,
+                  }) => (
                     <tr
                       key={account_number}
                       className="bg-[#243045] hover:bg-[#2a3c55] transition-colors"
@@ -92,7 +107,19 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
                         {new Date(created_at).toLocaleDateString()}
                       </td>
                       <td className="text-center">
-                        <button className="bg-primary rounded w-[70px]">
+                        <button
+                          onClick={() =>
+                            handleEditClick({
+                              account_number,
+                              account_status_id,
+                              status,
+                              type,
+                              balance,
+                              created_at,
+                            })
+                          }
+                          className="text-tprimary bg-primary w-[70px] h-[25px] rounded hover:text-blue-800"
+                        >
                           Edit
                         </button>
                       </td>
@@ -114,6 +141,13 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
             user_id={userId}
           />
         )}
+        <EditAccountModal
+          isOpen={isEditModalOpen}
+          onRequestClose={() => setIsEditModalOpen(false)}
+          account={{
+            selectedAccount,
+          }}
+        />
       </div>
     </div>
   );

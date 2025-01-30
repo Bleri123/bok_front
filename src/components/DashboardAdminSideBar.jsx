@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types';
-import DashboardSideBar from './DashboardSideBar';
+import PropTypes from "prop-types";
+import DashboardSideBar from "./DashboardSideBar";
 
 const links = [
   {
-    link: '/users',
-    text: 'Users',
+    link: "/dashboard/users",
+    text: "Users",
   },
   {
-    link: '/reports',
-    text: 'Reports',
+    link: "/reports",
+    text: "Reports",
   },
 ];
 
