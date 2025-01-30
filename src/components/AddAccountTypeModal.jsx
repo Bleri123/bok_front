@@ -19,115 +19,60 @@ const AddAccountTypeModal = ({ isOpen, onRequestClose, user_id }) => {
   const token = localStorage.getItem("token");
   useEffect(() => {
     const fetchData = async () => {
-      const fetchAccountTypes = async () => {
-        const response = await fetch(
-          `http://localhost:5000/api/accounts/types/account`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          setAccountTypes(data);
-        } else {
-          console.error("Fetched account types are not an array:", data);
-          setAccountTypes([]);
-        }
-      };
-
-      const fetchStatuses = async () => {
-        const response = await fetch(
-          "http://localhost:5000/api/accounts/statuses/account-statuses",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          setStatuses(data);
-        } else {
-          console.error("Fetched statuses are not an array:", data);
-          setStatuses([]);
-        }
-      };
-
-      const fetchUserAccounts = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost:5000/api/accounts/user/${user_id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          const data = await response.json();
-          if (Array.isArray(data)) {
-            setUserAccounts(data);
-          } else {
-            console.error("Fetched user accounts are not an array:", data);
-            setUserAccounts([]);
-          }
-        } catch (error) {
-          console.error("Error fetching user accounts:", error);
-          setUserAccounts([]);
-        }
-      };
-
-      await fetchAccountTypes();
-      await fetchStatuses();
-      await fetchUserAccounts();
+      await Promise.all([
+        fetchAccountTypes(),
+        fetchStatuses(),
+        // fetchUserAccounts(),
+      ]);
     };
 
     fetchData();
   }, [user_id, token]);
 
+  const fetchAccountTypes = async () => {
+    const response = await fetch(
+      `http://localhost:5000/api/accounts/user/missing-account-types/${user_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    setAccountTypes(Array.isArray(data) ? data : []);
+  };
+
+  const fetchStatuses = async () => {
+    const response = await fetch(
+      "http://localhost:5000/api/accounts/statuses/account-statuses",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    setStatuses(Array.isArray(data) ? data : []);
+  };
+
   const validationSchema = Yup.object().shape({
-    accountType: Yup.string().required("Account type is required"),
+    account_type_id: Yup.string().required("Account type is required"),
     status: Yup.string().required("Status is required"),
   });
 
-  const hasAllAccountTypes = () => {
-    const accountTypeSet = new Set(
-      userAccounts.map((account) => account.type.toLowerCase())
-    );
-    return (
-      accountTypeSet.has("debit") &&
-      accountTypeSet.has("credit") &&
-      accountTypeSet.has("savings")
-    );
-  };
-
   const handleSubmit = async (values) => {
-    if (hasAllAccountTypes()) {
-      toast.error("You cannot add more accounts. Maximum limit reached.");
-      return;
-    }
+    console.log("Attempting to submit with values: ", values);
 
-    const token = localStorage.getItem("token");
-    console.log("values", values);
-
-    if (!token) {
-      console.error("No token found");
-      return;
-    }
-
+    // Proceed with the submission if the check passes
     const data = {
-      user_id: values.user_id,
-      account_type_id: values.accountType,
+      user_id: user_id,
+      account_type_id: values.account_type_id,
       accountNumber: accountNumber,
-      // balance: balance,
-      // status: values.status,
     };
 
-    console.log("Submitting data:", data);
+    console.log("Submitting data: ", data);
 
     try {
       const response = await fetch(
@@ -141,22 +86,21 @@ const AddAccountTypeModal = ({ isOpen, onRequestClose, user_id }) => {
           body: JSON.stringify(data),
         }
       );
-      console.log("response", data);
+      console.log("Response: ", response);
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
 
+      // // Update the local state with the new account
+      setUserAccounts([...userAccounts, { type: values.account_type_id }]);
       onRequestClose();
+      toast.success(`${values.account_type_id} account added successfully!`);
     } catch (error) {
       console.error("Error:", error);
+      toast.error("Failed to add account. Please try again.");
     }
   };
-
-  if (hasAllAccountTypes()) {
-    toast.error("You cannot add more accounts. Maximum limit reached.");
-    onRequestClose();
-    return null;
-  }
 
   return (
     <>
@@ -180,7 +124,7 @@ const AddAccountTypeModal = ({ isOpen, onRequestClose, user_id }) => {
           </h2>
           <Formik
             initialValues={{
-              accountType: "",
+              account_type_id: "",
               status: "",
               user_id: user_id,
             }}
@@ -200,12 +144,11 @@ const AddAccountTypeModal = ({ isOpen, onRequestClose, user_id }) => {
                   className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                 >
                   <option value="">Select Status</option>
-                  {statuses &&
-                    statuses.map((status) => (
-                      <option key={status.id} value={status.name}>
-                        {status.name}
-                      </option>
-                    ))}
+                  {statuses.map((status) => (
+                    <option key={status.id} value={status.name}>
+                      {status.name}
+                    </option>
+                  ))}
                 </Field>
                 <ErrorMessage
                   name="status"
@@ -218,19 +161,18 @@ const AddAccountTypeModal = ({ isOpen, onRequestClose, user_id }) => {
                 <div className="mb-6">
                   <Field
                     as="select"
-                    name="accountType"
+                    name="account_type_id"
                     className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                   >
                     <option value="" label="Select Account Type" />
-                    {accountTypes &&
-                      accountTypes.map((type) => (
-                        <option key={type.id} value={type.id}>
-                          {type.type}
-                        </option>
-                      ))}
+                    {accountTypes.map((type) => (
+                      <option key={type.id} value={type.id}>
+                        {type.type}
+                      </option>
+                    ))}
                   </Field>
                   <ErrorMessage
-                    name="accountType"
+                    name="account_type_id"
                     component="div"
                     className="text-red-600"
                   />

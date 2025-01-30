@@ -10,7 +10,6 @@ import Home from "./pages/dashboardPages/Home";
 import Users from "./pages/dashboardPages/Users";
 import Deposit from "./pages/dashboardPages/Deposit";
 import Reports from "./pages/dashboardPages/Reports";
-import Accounts from "./pages/dashboardPages/Accounts";
 
 const router = createBrowserRouter([
   {
@@ -53,10 +52,6 @@ const router = createBrowserRouter([
       {
         path: "reports",
         element: <Reports />,
-      },
-      {
-        path: "accounts",
-        element: <Accounts />,
       },
     ],
   },

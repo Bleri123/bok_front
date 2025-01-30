@@ -18,10 +18,6 @@ const links = [
     link: "reports",
     text: "Reports",
   },
-  {
-    link: "accounts",
-    text: "Accounts",
-  },
 ];
 
 export default function DashboardUserSideBar({ show }) {
