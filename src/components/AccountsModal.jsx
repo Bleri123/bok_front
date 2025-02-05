@@ -11,17 +11,17 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
 
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      const token = getToken();
-      const res = await axios.get("http://localhost:5000/api/accounts/all", {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { userId },
-      });
-      console.log(res.data);
-      setAccounts(res.data);
-    };
+  const fetchAccounts = async () => {
+    const token = getToken();
+    const res = await axios.get("http://localhost:5000/api/accounts/all", {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { userId },
+    });
+    console.log(res.data);
+    setAccounts(res.data);
+  };
 
+  useEffect(() => {
     fetchAccounts();
   }, [userId]);
 
@@ -86,6 +86,7 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
               <tbody>
                 {accounts.map(
                   ({
+                    account_id,
                     account_number,
                     account_status_id,
                     status,
@@ -110,6 +111,7 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
                         <button
                           onClick={() =>
                             handleEditClick({
+                              account_id,
                               account_number,
                               account_status_id,
                               status,
@@ -144,9 +146,8 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
         <EditAccountModal
           isOpen={isEditModalOpen}
           onRequestClose={() => setIsEditModalOpen(false)}
-          account={{
-            selectedAccount,
-          }}
+          account={selectedAccount}
+          fetchAccounts={fetchAccounts}
         />
       </div>
     </div>

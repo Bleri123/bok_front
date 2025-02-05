@@ -4,8 +4,14 @@ import Modal from "react-modal";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import getToken from "../utils/getToken";
+import axios from "axios";
 
-const EditAccountModal = ({ isOpen, onRequestClose, account }) => {
+const EditAccountModal = ({
+  isOpen,
+  onRequestClose,
+  account,
+  fetchAccounts,
+}) => {
   // Define static status options
   const statusOptions = [
     { id: 1, value: "Active" },
@@ -13,54 +19,64 @@ const EditAccountModal = ({ isOpen, onRequestClose, account }) => {
   ];
 
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    console.log("Account Data:", account);
     if (account) {
-      // Set the initial status based on account_status_id
       const initialStatus = statusOptions.find(
-        (option) => option.id === account.selectedAccount?.account_status_id
+        (option) => option.id === account.account_status_id
       );
-      console.log("statusOptions:", statusOptions);
-
-      console.log("initialStatus:", initialStatus);
-      setSelectedStatus(initialStatus ? initialStatus.value : ""); // Set the selected status
+      setSelectedStatus(initialStatus ? initialStatus.value : "");
     }
-  }, [account, statusOptions]);
+  }, [account]);
 
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
   };
 
   const handleSave = async () => {
+    setIsLoading(true);
     const selectedOption = statusOptions.find(
       (option) => option.value === selectedStatus
     );
     const accountStatusId = selectedOption ? selectedOption.id : null;
     const accountId = account.account_number;
+
+    console.log("Sending data:", {
+      account_id: accountId,
+      account_status_id: accountStatusId,
+    });
+
     const token = getToken();
 
-    const response = await fetch(
-      "http://localhost:5000/api/accounts/account/status/update",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          account_id: accountId,
-          account_status_id: accountStatusId,
-        }),
-      }
-    );
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/accounts/account/status/update",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            account_id: accountId,
+            account_status_id: accountStatusId,
+          }),
+        }
+      );
 
-    if (response.ok) {
-      // Handle successful response
-      onRequestClose();
-    } else {
-      // Handle error response
-      console.error("Failed to update account status");
+      if (response.ok) {
+        console.log("Account status updated successfully");
+        fetchAccounts();
+        onRequestClose();
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to update account status", errorData);
+      }
+    } catch (error) {
+      console.error("Error updating account status", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -105,8 +121,9 @@ const EditAccountModal = ({ isOpen, onRequestClose, account }) => {
             <button
               onClick={handleSave}
               className="px-4 py-2 bg-primary text-white rounded hover:bg-blue-700"
+              disabled={isLoading}
             >
-              Save
+              {isLoading ? "Saving..." : "Save"}
             </button>
           </div>
         </div>

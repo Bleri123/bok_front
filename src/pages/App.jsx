@@ -1,5 +1,4 @@
 import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
 function App() {
   return (
     <div className="bg-secondary min-h-screen flex flex-col">
@@ -47,7 +46,6 @@ function App() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

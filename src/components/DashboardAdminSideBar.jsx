@@ -7,7 +7,7 @@ const links = [
     text: "Users",
   },
   {
-    link: "/reports",
+    link: "/dashboard/user-report",
     text: "Reports",
   },
 ];

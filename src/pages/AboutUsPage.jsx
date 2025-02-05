@@ -1,4 +1,3 @@
-import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 
 function AboutUs() {
@@ -104,7 +103,6 @@ function AboutUs() {
           </p>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

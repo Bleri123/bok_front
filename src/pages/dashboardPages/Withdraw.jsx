@@ -1,6 +1,5 @@
 import { Navigate, useOutletContext } from "react-router-dom";
 import getSelectedAccount from "../../utils/getSelectedAccount";
-import { Footer } from "../../components/Footer";
 import { useEffect, useState } from "react";
 import { WithdrawModal } from "../../components/WithdrawModal";
 import axios from "axios";
@@ -130,7 +129,7 @@ export default function Withdraw() {
                 )
               )
             }
-            className="form-select block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="form-select block w-full h-[30px] mt-1 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           >
             <option value="">Select an account</option>
             {userAccounts.map((account) => (
@@ -223,7 +222,6 @@ export default function Withdraw() {
           Withdraw
         </button>
       </div>
-      <Footer />
     </div>
   );
 }
