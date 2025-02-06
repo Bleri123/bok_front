@@ -1,121 +1,149 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import getToken from '../../utils/getToken';
-import PropTypes from 'prop-types';
-
-const getLastMonthDate = () => {
-  const date = new Date();
-  date.setMonth(date.getMonth() - 1);
-  return date.toISOString().split('T')[0];
-};
-
-const getDaysDate = (days) => {
-  const date = new Date();
-  date.setDate(date.getDate() - days);
-  return date.toISOString().split('T')[0];
-};
+import axios from "axios";
+import { useEffect, useState } from "react";
+import getToken from "../../utils/getToken";
+import PropTypes from "prop-types";
 
 export default function Reports() {
-  const [spendingData, setSpendingData] = useState([]);
-  const [sinceDate, setSinceDate] = useState(getDaysDate(7));
-  useEffect(() => {
-    async function fetchSpendingData() {
-      const token = getToken();
-      const res = await axios.get(
-        'http://localhost:5000/api/accounts/reports',
+  const [userReport, setUserReport] = useState([]);
+  const [showNoTransactions, setShowNoTransactions] = useState(false);
+
+  const fetchSpendingData = async () => {
+    const token = getToken();
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/accounts/users/user-report",
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          params: {
-            since_date: sinceDate,
-          },
         }
       );
+      console.log("API Response:", response.data);
 
-      const data = res.data.map((item) => ({
-        amount: Number(item.amount),
-        date: item.created_at,
-        type: item.name.toLowerCase(),
-      }));
-      setSpendingData(data);
-    }
-
-    fetchSpendingData();
-  }, [sinceDate]);
-
-  const handleChange = (event) => {
-    const value = event.target.value;
-
-    switch (value) {
-      case 'last7':
-        setSinceDate(getDaysDate(7));
-        break;
-      case 'last14':
-        setSinceDate(getDaysDate(14));
-        break;
-      case 'thisMonth':
-        setSinceDate(getLastMonthDate());
-        break;
+      const filteredData = response.data.filter(
+        (user) => user.email === user.email
+      ); // Replace with the actual email
+      setUserReport(filteredData);
+      setShowNoTransactions(filteredData.length === 0);
+    } catch (error) {
+      console.error("Error fetching user report:", error);
+      setShowNoTransactions(true);
     }
   };
 
-  const totalSpent = spendingData.reduce(
-    (sum, item) =>
-      item.type === 'external_transfer' || item.type === 'withdraw'
-        ? sum + item.amount
-        : sum,
-    0
+  useEffect(() => {
+    fetchSpendingData();
+  }, []);
+
+  const uniqueReports = Array.from(new Set(userReport.map(JSON.stringify))).map(
+    JSON.parse
   );
+
   return (
-    <div className="min-h-screen w-full py-8 sm:py-12 overflow-x-hidden">
-      <div className="w-full max-w-md mx-auto px-4 relative">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
-          Reports
-        </h1>
+    <div className="w-full rounded">
+      <div className="min-h-screen w-full py-8 sm:py-12">
+        <div className="w-full max-w-7xl mx-auto px-4 relative">
+          <h1 className="text-2xl sm:text-3xl font-bold text-tprimary mb-6 text-center">
+            Reports
+          </h1>
 
-        <div className="mb-6">
-          <select
-            className="w-full p-2.5 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            onChange={handleChange}
-          >
-            <option value="last7">Last 7 days</option>
-            <option value="last14">Last 14 days</option>
-            <option value="thisMonth">This month</option>
-          </select>
-        </div>
-
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm p-6 text-white mb-6">
-          <h2
-            className={`text-2xl font-bold text-center ${
-              totalSpent !== 0 && 'text-red-500'
-            }`}
-          >
-            €{totalSpent === 0 ? -totalSpent.toFixed(2) : totalSpent.toFixed(2)}
-          </h2>
-          <p className="text-blue-100 mt-1 text-center">Last 7 days</p>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <div className="space-y-3">
-            {spendingData.map((item) => (
-              <div
-                key={item.date}
-                className="flex justify-between items-center p-4 border border-gray-200 rounded-xl"
-              >
-                <div className="text-gray-800">
-                  {new Date(item.date).toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </div>
-                <div className="font-semibold text-gray-800">
-                  <Amount name={item.type} amount={item.amount.toFixed(2)} />
-                </div>
-              </div>
-            ))}
-          </div>
+          {uniqueReports.length > 0 ? (
+            <div className="mt-8 w-full">
+              <table className="w-full divide-y divide-gray-200 bg-white rounded-lg shadow-md">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      User ID
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Client
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Date
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Account Type
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Account Number
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Role
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Transaction Type
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Amount
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {uniqueReports.map((accounts) => (
+                    <tr key={accounts.user_id} className="hover:bg-gray-100">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {accounts.user_id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {accounts.first_name} {accounts.last_name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(accounts.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {accounts.type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {accounts.account_number}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {accounts.role}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {accounts.transaction_type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <Amount
+                          name={accounts.transaction_type}
+                          amount={accounts.amount}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : showNoTransactions ? (
+            <div className="mt-8 px-4">
+              <h2 className="text-3xl text-white font-extrabold text-gray-900 mb-8 text-center">
+                Client doesn&apos;t have any transactions yet.
+              </h2>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
@@ -124,16 +152,16 @@ export default function Reports() {
 
 function Amount({ name, amount }) {
   switch (name.toLowerCase()) {
-    case 'external_transfer':
+    case "external_transfer":
       return <span className="text-red-500">-{amount}€</span>;
-    case 'internal_transfer':
-      return <span className="text-green-500">+{amount}€</span>;
-    case 'withdraw':
+    case "internal_transfer":
+      return <span className="text-green">+{amount}€</span>;
+    case "withdraw":
       return <span className="text-red-500">-{amount}€</span>;
-    case 'deposit':
-      return <span className="text-green-500">+{amount}€</span>;
+    case "deposit":
+      return <span className="text-green">+{amount}€</span>;
     default:
-      return <span className="text-green-500">+{amount}€</span>;
+      return <span className="text-green">+{amount}€</span>;
   }
 }
 
