@@ -12,9 +12,9 @@ export default function Deposit() {
   const [credit, setCredit] = useState(null);
   const [savings, setSavings] = useState(null);
   const [debit, setDebit] = useState(null);
-  const { accounts, error } = useAccounts();
+  const { accounts, error, refetch } = useAccounts();
   const { selectedAccount } = useSelectedAccount();
-
+  const [selectedAccountType, setSelectedAccountType] = useState(null);
   useEffect(() => {
     if (accounts) {
       setCredit(
@@ -33,28 +33,10 @@ export default function Deposit() {
     return <h1>Error loading accounts</h1>;
   }
 
-  const deposit = async (amount) => {
-    const token = getToken();
-    try {
-      await axios.post(
-        "http://localhost:5000/api/transactions/deposit",
-        { amount: amount, account_id: selectedAccount.account_id },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-    } catch (e) {
-      if (e.response?.data) {
-        alert(`Error: ${e.response.data}`);
-      } else {
-        alert("An unexpected error occurred");
-      }
-    }
-
-    axios.post();
-  };
-
-  const toggleModal = (message) => {
+  const toggleModal = (message, accountType) => {
     setModalMessage(message);
     setShowModal((prev) => !prev);
+    setSelectedAccountType(accountType);
   };
 
   const handleCloseModal = () => {
@@ -68,7 +50,12 @@ export default function Deposit() {
           onClose={handleCloseModal}
           message={modalMessage}
           selectedAccount={selectedAccount.type}
-          updateAccount={deposit}
+          selectedAccountType={selectedAccountType}
+          accountAmount={selectedAccountType?.balance}
+          onSuccess={() => {
+            refetch();
+            handleCloseModal();
+          }}
         />
       )}
       <div className="flex-grow flex flex-col items-center mt-11">
@@ -79,21 +66,27 @@ export default function Deposit() {
         >
           <Card
             amount={Number(credit?.balance)}
+            accountData={credit}
             text={"Credit"}
-            toggleModal={toggleModal}
+            toggleModal={(message) => toggleModal(message, credit)}
             accountType={"Credit"}
+            setSelectedAccountType={setSelectedAccountType}
           />
           <Card
             amount={Number(savings?.balance)}
+            accountData={savings}
             text={"Savings"}
             accountType={"Savings"}
-            toggleModal={toggleModal}
+            toggleModal={(message) => toggleModal(message, savings)}
+            setSelectedAccountType={setSelectedAccountType}
           />
           <Card
             amount={Number(debit?.balance)}
+            accountData={debit}
             text={"Debit"}
             accountType={"Debit"}
-            toggleModal={toggleModal}
+            toggleModal={(message) => toggleModal(message, debit)}
+            setSelectedAccountType={setSelectedAccountType}
           />
         </div>
       </div>
@@ -101,15 +94,27 @@ export default function Deposit() {
   );
 }
 
-function Card({ toggleModal, amount, text, accountType }) {
+function Card({
+  toggleModal,
+  amount,
+  text,
+  accountType,
+  accountData,
+  setSelectedAccountType,
+}) {
   if (!amount) {
     return null;
   }
 
+  const handleClick = () => {
+    setSelectedAccountType(accountData);
+    toggleModal(accountType);
+  };
+
   return (
     <div id="card" className="flex flex-col items-center mb-4">
       <button
-        onClick={() => toggleModal(accountType)}
+        onClick={handleClick}
         className="bg-primary text-white p-2 rounded w-[150px] h-[70px] text-2xl md:w-[350px] md:h-[100px] md:text-3xl lg:w-[450px] lg:text-4xl"
       >
         {text}
@@ -124,4 +129,6 @@ Card.propTypes = {
   amount: PropTypes.number,
   text: PropTypes.string,
   accountType: PropTypes.string,
+  accountData: PropTypes.object,
+  setSelectedAccountType: PropTypes.func,
 };

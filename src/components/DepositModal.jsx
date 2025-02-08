@@ -1,7 +1,25 @@
 import React, { useEffect, useState } from "react";
-
-export const DepositModal = ({ onClose, message, selectedAccount, updateAccount }) => {
+import axios from "axios";
+import getToken from "../utils/getToken";
+import toast from "react-hot-toast";
+export const DepositModal = ({
+  onClose,
+  message,
+  selectedAccount,
+  selectedAccountType,
+  accountAmount,
+  onSuccess,
+}) => {
+  const [receiver_account_number, setReceiver_account_number] = useState("");
   const [amount, setAmount] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInvalid, setIsInvalid] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [isValidResponse, setIsValidResponse] = useState(false);
+  const [amountExceedsLimit, setAmountExceedsLimit] = useState(false);
+  const [amountExceedsLimitMessage, setAmountExceedsLimitMessage] =
+    useState("");
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -16,14 +34,102 @@ export const DepositModal = ({ onClose, message, selectedAccount, updateAccount 
     };
   }, [onClose]);
 
-  const handleSend = async () => {
-    const parsedAmount = parseFloat(amount.replace(",", ".")); // Convert to float
-    if (!isNaN(parsedAmount) && parsedAmount > 0) {
-      updateAccount(parsedAmount); // Update the selected account
-      setAmount(""); // Clear the input
-      onClose(); // Close the modal after sending
+  const handleCheckIfAccountExits = async () => {
+    const token = getToken();
+    if (receiver_account_number.length === 16) {
+      setIsLoading(true);
+      setIsInvalid(false);
+      setIsValidResponse(false);
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/accounts/check-account/account-number",
+          {
+            receiver_account_number: receiver_account_number,
+            sender_account_number: selectedAccountType.account_number,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (response.data.length > 0) {
+          setIsValidResponse(true);
+        } else if (response.data.error_message === "Account does not exist.") {
+          setIsInvalid(true);
+          toast.error("Account does not exist.");
+        } else if (
+          response.data.error_message ===
+          "Cannot send money to the same account."
+        ) {
+          setIsInvalid(true);
+          toast.error("Cannot send money to the same account.");
+        } else {
+          setIsInvalid(true);
+          toast.error("Something went wrong!");
+        }
+      } catch (error) {
+        console.error("Error checking account existence:", error);
+        if (error.response && error.response.status === 404) {
+          toast.error(error.response.data.error_message);
+          setIsInvalid(true);
+        } else {
+          toast.error("An unexpected error occurred");
+        }
+      } finally {
+        setIsLoading(false);
+      }
     } else {
-      alert("Please enter a valid amount.");
+      toast.error("Please enter a valid 16-digit account number.");
+    }
+  };
+
+  useEffect(() => {
+    if (receiver_account_number.length === 16) {
+      setIsButtonDisabled(false);
+      handleCheckIfAccountExits();
+    } else {
+      setIsButtonDisabled(true);
+    }
+  }, [receiver_account_number]);
+
+  const handleInputChange = (e) => {
+    const { value } = e.target;
+    if (value.length <= 16) {
+      setReceiver_account_number(value);
+    }
+  };
+
+  const handleAmountChange = (e) => {
+    const { value } = e.target;
+    setAmount(value);
+    if (parseFloat(value) > parseFloat(accountAmount)) {
+      setAmountExceedsLimit(true);
+      setAmountExceedsLimitMessage("Amount exceeds account limit.");
+    } else {
+      setAmountExceedsLimit(false);
+      setAmountExceedsLimitMessage("");
+    }
+  };
+
+  const handleSendMoney = async () => {
+    const token = getToken();
+
+    try {
+      await axios.post(
+        "http://localhost:5000/api/transactions/send-money",
+        {
+          receiver_account_number: receiver_account_number,
+          sender_account_number: selectedAccountType.account_number,
+          amount: amount,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Transaction successful.");
+      onSuccess();
+    } catch (error) {
+      console.error("Error sending money:", error);
+      if (error.response && error.response.data.details) {
+        toast.error(`Internal server error: ${error.response.data.details}`);
+      } else {
+        toast.error("Internal server error");
+      }
     }
   };
 
@@ -52,16 +158,50 @@ export const DepositModal = ({ onClose, message, selectedAccount, updateAccount 
             </h2>
             <input
               type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter Number"
-              className="border border-gray-950 rounded-md p-2 w-[200px] text-center md:w-[250px] md:text-xl"
+              value={receiver_account_number}
+              onChange={handleInputChange}
+              placeholder="Enter 16-digit account number"
+              className={`border ${
+                isInvalid
+                  ? "border-red-500"
+                  : isFocused && receiver_account_number.length !== 16
+                  ? "border-red-500"
+                  : isValidResponse
+                  ? "border-green"
+                  : "border-gray-950"
+              } rounded-md p-2 w-[200px] text-center md:w-[250px] md:text-xl`}
+              maxLength={16}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              disabled={isLoading}
             />
+            <input
+              type="text"
+              value={amount}
+              onChange={handleAmountChange}
+              placeholder="Enter amount"
+              className={`border ${
+                amountExceedsLimit ? "border-red-500" : "border-gray-950"
+              } rounded-md p-2 w-[200px] text-center md:w-[250px] md:text-xl`}
+              disabled={isLoading}
+            />
+            {amountExceedsLimit && (
+              <p className="text-red-500 text-sm mt-1">
+                {amountExceedsLimitMessage}
+              </p>
+            )}
             <button
-              onClick={handleSend}
-              className="bg-primary text-white p-2 rounded w-[200px] mt-4 mb-6 md:h-[50px] md:text-xl"
+              onClick={handleSendMoney}
+              disabled={isButtonDisabled || isLoading || amountExceedsLimit}
+              className={` text-white p-2 rounded w-[200px] mt-4 mb-6 md:h-[50px] md:text-xl ${
+                isLoading
+                  ? "opacity-50"
+                  : isButtonDisabled || amountExceedsLimit
+                  ? "bg-gray-300 cursor-not-allowed text-gray-500"
+                  : "bg-primary text-white cursor-pointer"
+              }`}
             >
-              Send
+              {isLoading ? "Checking..." : "Send"}
             </button>
           </div>
         </div>
