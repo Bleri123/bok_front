@@ -13,7 +13,7 @@ export default function Transfer() {
   const [savings, setSavings] = useState(null);
   const [debit, setDebit] = useState(null);
   const { accounts, error, refetch } = useAccounts();
-  const { selectedAccount } = useSelectedAccount();
+  const { error: accountError, selectedAccount } = useSelectedAccount();
   const [selectedAccountType, setSelectedAccountType] = useState(null);
   useEffect(() => {
     if (accounts) {
@@ -31,6 +31,10 @@ export default function Transfer() {
 
   if (error) {
     return <h1>Error loading accounts</h1>;
+  }
+
+  if (accountError) {
+    return <h1 className="text-red-500">{accountError}</h1>;
   }
 
   const toggleModal = (message, accountType) => {

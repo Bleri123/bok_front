@@ -92,7 +92,7 @@ export default function Reports() {
         <div className="mb-6 flex flex-col items-center">
           <div className="flex justify-between mb-4">
             <select
-              className="w-[200px] p-3 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mr-4"
+              className="w-[200px] p-3 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue focus:border-blue mr-4"
               onChange={handleChange}
             >
               <option value="7days">Last 7 days</option>
@@ -101,7 +101,7 @@ export default function Reports() {
             </select>
 
             <select
-              className="w-[200px] p-3 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-[200px] p-3 text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue focus:border-blue"
               onChange={handleUserChange}
             >
               {activeUser.map((user) => (
@@ -112,7 +112,7 @@ export default function Reports() {
             </select>
           </div>
           <button
-            className="px-4 py-2 bg-primary text-white rounded-xl w-[150px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="px-4 py-2 bg-primary text-white rounded-xl w-[150px] focus:outline-none focus:ring-2 focus:ring-blue focus:ring-offset-2"
             onClick={handleSubmit}
           >
             Submit
@@ -220,13 +220,13 @@ function Amount({ name, amount }) {
     case "external_transfer":
       return <span className="text-red-500">-{amount}€</span>;
     case "internal_transfer":
-      return <span className="text-green-500">+{amount}€</span>;
+      return <span className="text-green">+{amount}€</span>;
     case "withdraw":
       return <span className="text-red-500">-{amount}€</span>;
     case "deposit":
-      return <span className="text-green-500">+{amount}€</span>;
+      return <span className="text-green">+{amount}€</span>;
     default:
-      return <span className="text-green-500">+{amount}€</span>;
+      return <span className="text-green">+{amount}€</span>;
   }
 }
 

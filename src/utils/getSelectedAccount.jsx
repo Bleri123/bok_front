@@ -1,6 +1,6 @@
-import { useContext } from 'react';
-import { SelectedAccountContext } from '../pages/Dashboard';
-import useAccounts from './useAccounts';
+import { useContext } from "react";
+import { SelectedAccountContext } from "../pages/Dashboard";
+import useAccounts from "./useAccounts";
 
 export default function useSelectedAccount() {
   const { accounts, error } = useAccounts();
@@ -13,7 +13,8 @@ export default function useSelectedAccount() {
   if (!accounts || accounts.length === 0) {
     return {
       selectedAccount: null,
-      error: 'No accounts exist for this user',
+      error:
+        "No accounts exist for this user. Please contact the administrator.",
       accounts,
     };
   }

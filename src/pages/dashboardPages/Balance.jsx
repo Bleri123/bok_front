@@ -5,9 +5,11 @@ import axios from "axios";
 import PropTypes from "prop-types";
 
 import getToken from "../../utils/getToken";
+import useAccounts from "../../utils/useAccounts";
 
 export default function Balance() {
   const { error, selectedAccount } = getSelectedAccount();
+  const { accounts } = useAccounts();
   const { isAdmin } = useOutletContext();
   const { error: transactionHistoryError } = useTransactionHistory();
 
@@ -20,16 +22,30 @@ export default function Balance() {
   }
 
   return (
-    <div className="bg-balancebg2 min-h-screen flex flex-col justify-between overflow-hidden">
+    <div className="bg-balancebg2 min-h-screen flex flex-col justify-between overflow-hidden ">
       <div className="">
-        <div className="bg-balancebg w-screen h-[120px] flex flex-col justify-center items-center overflow-hidden lg:w-[860px] lg:h-[150px] xl:w-[1230px] xl:h-[400px] 2xl:w-screen">
+        <div className="bg-balancebg w-screen flex flex-col justify-center items-center overflow-hidden lg:w-[860px]  xl:w-[1230px] 2xl:w-screen py-10">
           <div className="flex flex-col items-center justify-center w-full h-full 2xl:translate-x-[-100px]">
-            <h1 className="text-3xl font-bold text-white md:text-2xl lg:text-4xl xl:text-5xl text-center">
-              Cash / Bank Balance
+            <h1 className="text-3xl font-bold text-white md:text-2xl lg:text-4xl xl:text-5xl text-center mb-8">
+              Cash / Bank Balances
             </h1>
-            <h2 className="text-3xl text-white mt-2 md:text-2xl lg:text-4xl xl:text-5xl text-center 2xl:mt-11">
-              {selectedAccount.balance} €
-            </h2>
+            <div className="flex flex-col items-center justify-center w-full">
+              {accounts?.map((account) => (
+                <div
+                  key={account.id}
+                  className="w-full text-center max-w-md mb-8"
+                >
+                  <div className="bg-white bg-opacity-20 p-4 rounded-lg">
+                    <h2 className="text-2xl font-bold text-white mb-2">
+                      {account?.type} Account
+                    </h2>
+                    <h2 className="text-2xl font-bold text-white">
+                      Balance: {parseFloat(account?.balance).toFixed(2)} €
+                    </h2>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -42,13 +58,13 @@ function Amount({ name, amount }) {
     case "external_transfer":
       return <span className="text-red-500">-{amount}€</span>;
     case "internal_transfer":
-      return <span className="text-green-500">+{amount}€</span>;
+      return <span className="text-green">+{amount}€</span>;
     case "withdraw":
       return <span className="text-red-500">-{amount}€</span>;
     case "deposit":
-      return <span className="text-green-500">+{amount}€</span>;
+      return <span className="text-green">+{amount}€</span>;
     default:
-      return <span className="text-green-500">+{amount}€</span>;
+      return <span className="text-green">+{amount}€</span>;
   }
 }
 

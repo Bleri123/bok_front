@@ -13,6 +13,7 @@ export default function useAccounts() {
         headers: { Authorization: `Bearer ${token}` },
         signal,
       });
+
       setAccounts(response.data);
     } catch (e) {
       if (e.name === "CanceledError") {
