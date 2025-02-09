@@ -9,7 +9,7 @@ export const Header = () => {
       <div id="logo" className="w-[40%] border-r flex justify-center">
         <Link to="/">
           <img
-            src="/images/newBOKlogo.png"
+            src="/images/newBOKlogo2.png"
             alt="BOK"
             className="w-[175px] h-[110px] object-cover lg:w-[200px] lg:h-[145px] xl:w-[300px] xl:h-[220px]"
           />
