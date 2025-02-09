@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { DepositModal } from "../../components/DepositModal";
+import { TransferModal } from "../../components/TransferModal";
 import useAccounts from "../../utils/useAccounts";
 import useSelectedAccount from "../../utils/getSelectedAccount";
 import axios from "axios";
 import getToken from "../../utils/getToken";
 import PropTypes from "prop-types";
 
-export default function Deposit() {
+export default function Transfer() {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [credit, setCredit] = useState(null);
@@ -46,7 +46,7 @@ export default function Deposit() {
   return (
     <div className="flex flex-col w-full h-screen">
       {showModal && (
-        <DepositModal
+        <TransferModal
           onClose={handleCloseModal}
           message={modalMessage}
           selectedAccount={selectedAccount.type}
@@ -59,7 +59,7 @@ export default function Deposit() {
         />
       )}
       <div className="flex-grow flex flex-col items-center mt-11">
-        <h1 className="mb-1 text-tprimary text-3xl lg:text-5xl">Deposit</h1>
+        <h1 className="mb-1 text-tprimary text-3xl lg:text-5xl">Transfer</h1>
         <div
           id="Cards"
           className="flex flex-col bg-secondary items-center p-10 w-[200px] rounded-md mt-6 md:w-[450px] lg:w-[670px]"

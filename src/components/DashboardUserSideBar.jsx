@@ -11,9 +11,10 @@ const links = [
     text: "Withdraw",
   },
   {
-    link: "deposit",
-    text: "Deposit",
+    link: "transfer",
+    text: "Transfer",
   },
+
   {
     link: "reports",
     text: "Reports",

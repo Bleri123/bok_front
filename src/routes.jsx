@@ -8,7 +8,7 @@ import Withdraw from "./pages/dashboardPages/Withdraw";
 import Balance from "./pages/dashboardPages/Balance";
 import Home from "./pages/dashboardPages/Home";
 import Users from "./pages/dashboardPages/Users";
-import Deposit from "./pages/dashboardPages/Deposit";
+import Transfer from "./pages/dashboardPages/Transfer";
 import Reports from "./pages/dashboardPages/Reports";
 import UserReport from "./pages/Admin/UserReport";
 const router = createBrowserRouter([
@@ -46,9 +46,10 @@ const router = createBrowserRouter([
         element: <Users />,
       },
       {
-        path: "deposit",
-        element: <Deposit />,
+        path: "transfer",
+        element: <Transfer />,
       },
+
       {
         path: "reports",
         element: <Reports />,
