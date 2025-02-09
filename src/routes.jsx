@@ -11,9 +11,12 @@ import Users from "./pages/dashboardPages/Users";
 import Transfer from "./pages/dashboardPages/Transfer";
 import Reports from "./pages/dashboardPages/Reports";
 import UserReport from "./pages/Admin/UserReport";
+import Deposit from "./pages/dashboardPages/Deposit";
+
 const router = createBrowserRouter([
   {
     path: "/",
+
     element: <App />,
     errorElement: <Error />,
   },
@@ -49,11 +52,15 @@ const router = createBrowserRouter([
         path: "transfer",
         element: <Transfer />,
       },
-
+      {
+        path: "deposit",
+        element: <Deposit />,
+      },
       {
         path: "reports",
         element: <Reports />,
       },
+
       {
         path: "user-report",
         element: <UserReport />,

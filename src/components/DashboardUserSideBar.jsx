@@ -14,7 +14,10 @@ const links = [
     link: "transfer",
     text: "Transfer",
   },
-
+  {
+    link: "deposit",
+    text: "Deposit",
+  },
   {
     link: "reports",
     text: "Reports",
