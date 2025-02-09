@@ -31,9 +31,11 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
 
   // Add this function to check if user has all account types
   const hasAllAccountTypes = () => {
+    console.log("dsaad", accounts);
     const accountTypeSet = new Set(
       accounts.map((account) => account.type.toLowerCase())
     );
+
     return (
       accountTypeSet.has("debit") &&
       accountTypeSet.has("credit") &&
@@ -58,33 +60,34 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
           &times;
         </button>
         <h2 className="text-white text-2xl font-semibold">Accounts</h2>
-        {accounts.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-300">
-              <thead className="bg-[#1e2836] text-gray-400 uppercase">
-                <tr>
-                  <th className="py-3 px-4">Account Number</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Type</th>
-                  <th className="py-3 px-4">Balance</th>
-                  <th className="py-3 px-4">Created At</th>
-                  <th className="py-3 px-4 text-center">
-                    <div>
-                      {!hasAllAccountTypes() && (
-                        <button
-                          onClick={() => setIsAddAccountModalOpen(true)}
-                          className="bg-balancebg2 w-[70px] text-white rounded hover:bg-blue-600"
-                          title="Add new account"
-                        >
-                          +
-                        </button>
-                      )}
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {accounts.map(
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-gray-300">
+            <thead className="bg-[#1e2836] text-gray-400 uppercase">
+              <tr>
+                <th className="py-3 px-4">Account Number</th>
+                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4">Type</th>
+                <th className="py-3 px-4">Balance</th>
+                <th className="py-3 px-4">Created At</th>
+                <th className="py-3 px-4 text-center">
+                  <div>
+                    {!hasAllAccountTypes() && (
+                      <button
+                        onClick={() => setIsAddAccountModalOpen(true)}
+                        className="bg-balancebg2 w-[70px] text-white rounded "
+                        title="Add new account"
+                      >
+                        +
+                      </button>
+                    )}
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {accounts.length > 0 ? (
+                accounts.map(
                   ({
                     account_id,
                     account_number,
@@ -127,20 +130,26 @@ export default function AccountsModal({ userId, isVisible, setIsVisible }) {
                       </td>
                     </tr>
                   )
-                )}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-400 text-center mt-4">
-            No accounts found for this user.
-          </p>
-        )}
+                )
+              ) : (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="text-gray-400 text-center py-3 px-4"
+                  >
+                    No accounts found for this user.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
         {isAddAccountModalOpen && (
           <AddAccountTypeModal
             isOpen={isAddAccountModalOpen}
             onRequestClose={() => setIsAddAccountModalOpen(false)}
             user_id={userId}
+            fetchAccounts={fetchAccounts}
           />
         )}
         <EditAccountModal

@@ -7,7 +7,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 Modal.setAppElement("#root");
 
-const AddAccountTypeModal = ({ isOpen, onRequestClose, user_id }) => {
+const AddAccountTypeModal = ({
+  isOpen,
+  onRequestClose,
+  user_id,
+  fetchAccounts,
+}) => {
   const [accountNumber] = useState(
     Math.floor(Math.random() * 10000000000000000)
   );
@@ -92,6 +97,7 @@ const AddAccountTypeModal = ({ isOpen, onRequestClose, user_id }) => {
         throw new Error("Network response was not ok");
       }
 
+      fetchAccounts();
       // // Update the local state with the new account
       setUserAccounts([...userAccounts, { type: values.account_type_id }]);
       onRequestClose();
