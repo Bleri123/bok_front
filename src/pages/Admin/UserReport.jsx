@@ -220,13 +220,13 @@ function Amount({ name, amount }) {
     case "external_transfer":
       return <span className="text-red-500">-{amount}€</span>;
     case "internal_transfer":
-      return <span className="text-green-500">+{amount}€</span>;
+      return <span className="text-green">+{amount}€</span>;
     case "withdraw":
       return <span className="text-red-500">-{amount}€</span>;
     case "deposit":
-      return <span className="text-green-500">+{amount}€</span>;
+      return <span className="text-green">+{amount}€</span>;
     default:
-      return <span className="text-green-500">+{amount}€</span>;
+      return <span className="text-green">+{amount}€</span>;
   }
 }
 
