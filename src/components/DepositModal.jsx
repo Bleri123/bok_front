@@ -1,35 +1,32 @@
 import React, { useEffect, useState } from "react";
 
-export const DepositModal = ({ onClose, onWithdraw }) => {
-  const [amount, setAmount] = useState(""); // State to hold the input amount
+export const DepositModal = ({ onClose, onDeposit }) => {
+  const [amount, setAmount] = useState("");
 
-  const handleWithdraw = () => {
-    const numericAmount = parseFloat(amount); // Parse the input as a number
+  const handleDeposit = () => {
+    const numericAmount = parseFloat(amount);
     if (!isNaN(numericAmount) && numericAmount > 0) {
-      onWithdraw(numericAmount); // Pass the custom amount back to Withdraw
-      setAmount(""); // Clear the input
-      onClose(); // Close the modal
+      onDeposit(numericAmount);
+      setAmount("");
+      onClose();
     } else {
-      alert("Please enter a valid amount."); // Handle invalid input in the modal
+      alert("Please enter a valid amount.");
     }
   };
 
-  // Effect to handle keydown event for closing the modal
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
-        onClose(); // Call onClose when ESCAPE is pressed
+        onClose();
       }
     };
 
-    // Add event listener
     window.addEventListener("keydown", handleKeyDown);
 
-    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onClose]); // Dependency array includes onClose
+  }, [onClose]);
 
   return (
     <div
@@ -58,17 +55,17 @@ export const DepositModal = ({ onClose, onWithdraw }) => {
                     type="number"
                     placeholder="Enter Number"
                     className="text-center text-base border-2 border-primary w-full h-[50px] max-w-[180px] rounded bg-primary text-tprimary placeholder:text-tprimary md:h-[60px] lg:text-2xl lg:max-w-[500px] lg:h-[70px]"
-                    value={amount} // Bind input value to state
-                    onChange={(e) => setAmount(e.target.value)} // Update state on input change
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
                   />
                 </h3>
 
                 <p className="text-sm text-center text-gray-500">
                   <button
-                    onClick={() => handleWithdraw()}
+                    onClick={() => handleDeposit()}
                     className="bg-primary text-tprimary p-4 mt-4 w-full max-w-[180px] mx-auto rounded-md text-xl md:w-[500px] md:text-xl lg:text-2xl lg:max-w-[300px] lg:h-[70px]"
                   >
-                    Withdraw
+                    Deposit
                   </button>
                 </p>
               </div>

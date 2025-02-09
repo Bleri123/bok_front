@@ -11,10 +11,10 @@ export default function Deposit() {
   const [amount, setAmount] = useState(0);
   const [notification, setNotification] = useState("");
   const [notificationStatus, setNotificationStatus] = useState("");
-  const [selectedButton, setSelectedButton] = useState(null); // Track the selected button
+  const [selectedButton, setSelectedButton] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [userAccounts, setUserAccounts] = useState([]); // State to hold user accounts
-  const [selectedAccount, setSelectedAccount] = useState(null); // State to hold the selected account
+  const [userAccounts, setUserAccounts] = useState([]);
+  const [selectedAccount, setSelectedAccount] = useState(null);
   const token = getToken();
 
   const getUserAccounts = async () => {
@@ -36,37 +36,35 @@ export default function Deposit() {
     getUserAccounts();
   }, []);
 
-  // Function to toggle the modal
   const toggleModal = () => {
     setShowModal((prev) => !prev);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false); // Close the modal when the close image is clicked
+    setShowModal(false);
   };
 
   const handleAmountSelect = (selectedAmount) => {
     setAmount(selectedAmount);
     setNotification("");
     setNotificationStatus("");
-    setSelectedButton(selectedAmount); // Set the selected button
+    setSelectedButton(selectedAmount);
   };
 
   const handleAccountSelect = (account) => {
-    setSelectedAccount(account); // Update the selected account state
+    setSelectedAccount(account);
   };
 
-  const handleWithdraw = async (withdrawnAmount = amount) => {
-    if (typeof withdrawnAmount === "number" && withdrawnAmount > 0) {
+  const handleDeposit = async (depositedAmount = amount) => {
+    if (typeof depositedAmount === "number" && depositedAmount > 0) {
       const data = {
-        chosen_value: withdrawnAmount,
+        chosen_value: depositedAmount,
         account_type_id: selectedAccount?.account_type_id,
       };
-      console.log("data", data);
 
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/accounts/user/withdraw",
+          "http://localhost:5000/api/accounts/user/deposit",
           data,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -75,7 +73,7 @@ export default function Deposit() {
         setNotificationStatus("success");
         setNotification(
           response?.data?.message ||
-            `Successfully withdrew: ${withdrawnAmount}€`
+            `Successfully deposited: ${depositedAmount}€`
         );
 
         setSelectedButton(null);
@@ -87,7 +85,7 @@ export default function Deposit() {
       }
     } else {
       setNotificationStatus("error");
-      setNotification("Invalid amount"); // Handle invalid amount
+      setNotification("Invalid amount");
     }
   };
 
@@ -101,9 +99,8 @@ export default function Deposit() {
 
   return (
     <div className="bg-balancebg2 min-h-screen w-[100vw] flex flex-col justify-between overflow-hidden">
-      {/* Use showModal to conditionally render the modal */}
       {showModal && (
-        <DepositModal onClose={handleCloseModal} onWithdraw={handleWithdraw} />
+        <DepositModal onClose={handleCloseModal} onDeposit={handleDeposit} />
       )}
       <div className="w-4/5 flex flex-col gap-4 mx-auto">
         <h1 className="text-center text-2xl font-bold text-tprimary mt-6 md:text-4xl md:mb-5">
@@ -217,10 +214,10 @@ export default function Deposit() {
         </div>
 
         <button
-          onClick={() => handleWithdraw(amount)} // Ensure `amount` is passed correctly
+          onClick={() => handleDeposit(amount)}
           className="bg-primary text-tprimary p-4 mt-4 w-full max-w-[180px] mx-auto rounded-md text-2xl md:max-w-[400px]"
         >
-          Withdraw
+          Deposit
         </button>
       </div>
     </div>
