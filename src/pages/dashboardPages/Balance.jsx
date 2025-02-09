@@ -24,7 +24,7 @@ export default function Balance() {
   return (
     <div className="bg-balancebg2 min-h-screen flex flex-col justify-between overflow-hidden ">
       <div className="">
-        <div className="bg-balancebg w-screen flex flex-col justify-center items-center overflow-hidden lg:w-[860px]  xl:w-[1230px] 2xl:w-screen py-10">
+        <div className="bg-balancebg w-screen flex flex-col justify-center items-center overflow-hidden lg:w-screen  xl:w-screen 2xl:w-screen py-10">
           <div className="flex flex-col items-center justify-center w-full h-full 2xl:translate-x-[-100px]">
             <h1 className="text-3xl font-bold text-white md:text-2xl lg:text-4xl xl:text-5xl text-center mb-8">
               Cash / Bank Balances
@@ -58,13 +58,13 @@ function Amount({ name, amount }) {
     case "external_transfer":
       return <span className="text-red-500">-{amount}€</span>;
     case "internal_transfer":
-      return <span className="text-green">+{amount}€</span>;
+      return <span className="text-green-500">+{amount}€</span>;
     case "withdraw":
       return <span className="text-red-500">-{amount}€</span>;
     case "deposit":
-      return <span className="text-green">+{amount}€</span>;
+      return <span className="text-green-500">+{amount}€</span>;
     default:
-      return <span className="text-green">+{amount}€</span>;
+      return <span className="text-green-500">+{amount}€</span>;
   }
 }
 
