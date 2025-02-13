@@ -150,9 +150,6 @@ export const TransferModal = ({
               alt="close"
               onClick={onClose}
             />
-            <h2 className="text-lg font-semibold text-center mt-2 md:text-2xl">
-              {selectedAccount}
-            </h2>
             <h2 className="text-2xl font-bold text-center md:text-3xl lg:mb-5">
               {message}
             </h2>
