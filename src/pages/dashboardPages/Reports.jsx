@@ -56,12 +56,6 @@ export default function Reports() {
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      User ID
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
                       Client
                     </th>
                     <th
@@ -105,9 +99,6 @@ export default function Reports() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {uniqueReports.map((accounts) => (
                     <tr key={accounts.user_id} className="hover:bg-gray-100">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {accounts.user_id}
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {accounts.first_name} {accounts.last_name}
                       </td>
